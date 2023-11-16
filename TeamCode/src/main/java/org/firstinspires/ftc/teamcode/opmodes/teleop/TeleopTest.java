@@ -2,11 +2,13 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.common.GamepadEx;
+import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
 
 @TeleOp
@@ -26,16 +28,13 @@ public class TeleopTest extends LinearOpMode {
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-
         GamepadEx gamepadEx1 = new GamepadEx(gamepad1);
         GamepadEx gamepadEx2 = new GamepadEx(gamepad2);
 
-//        Pivot pivot = new Pivot(hardwareMap);
-//        Trapdoor trapdoor = new Trapdoor(hardwareMap);
-//        Lift lift = new Lift(hardwareMap);
         Drivetrain drive = new Drivetrain(hardwareMap);
+        MecanumDrive rrDrive = new MecanumDrive(this.hardwareMap, new Pose2d(0,0,0));
 
-//        DcMotor intake = hardwareMap.dcMotor.get("intake");
+//        gamepad1.setLedColor(0, 255, 0, Integer.MAX_VALUE);
 
         waitForStart();
 
@@ -44,8 +43,20 @@ public class TeleopTest extends LinearOpMode {
         while (opModeIsActive() && !isStopRequested()) {
             drive.vectorMove(gamepad1.left_stick_x, -gamepad1.left_stick_y,
                     (gamepad1.right_trigger - gamepad1.left_trigger),
-                    0.8);
+                    1);
+            telemetry.update();
             gamepadEx1.update();
+//            if (gamepad1.dpad_up) {
+//                drive.vectorMove(0, 1, 0, gamepad1.right_trigger);
+//            } else if (gamepad1.dpad_down) {
+//                drive.vectorMove(0, -1, 0, gamepad1.right_trigger);
+//            } else if (gamepad1.dpad_left) {
+//                drive.vectorMove(-1, 0, 0, gamepad1.right_trigger);
+//            } else if (gamepad1.dpad_right) {
+//                drive.vectorMove(1, 0, 0, gamepad1.right_trigger);
+//            } else {
+//                drive.vectorMove(0, 0, 0, 0);
+//            }
 //            drive.bl.setPower(gamepad1.dpad_left ? 1 : 0);
 //            drive.br.setPower(gamepad1.dpad_up ? 1 : 0);
 //            drive.fl.setPower(gamepad1.dpad_right ? 1 : 0);

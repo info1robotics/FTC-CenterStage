@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 
 public class Drivetrain {
@@ -14,12 +15,39 @@ public class Drivetrain {
         fr = hardwareMap.get(DcMotor.class, "FR");
         bl = hardwareMap.get(DcMotor.class, "BL");
         br = hardwareMap.get(DcMotor.class, "BR");
-//        fl.setDirection(DcMotorSimple.Direction.REVERSE);
-//        bl.setDirection(DcMotorSimple.Direction.REVERSE);
+        fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        fl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        fr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        fl.setDirection(DcMotorSimple.Direction.REVERSE);
+        bl.setDirection(DcMotorSimple.Direction.REVERSE);
         fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
+        MotorConfigurationType motorConfigurationType = fr.getMotorType().clone();
+        motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
+        fr.setMotorType(motorConfigurationType);
+
+         motorConfigurationType = fl.getMotorType().clone();
+        motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
+        fl.setMotorType(motorConfigurationType);
+
+         motorConfigurationType = br.getMotorType().clone();
+        motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
+        br.setMotorType(motorConfigurationType);
+
+         motorConfigurationType = bl.getMotorType().clone();
+        motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
+        bl.setMotorType(motorConfigurationType);
     }
 
     public void vectorMove(double x, double y, double t, double power)
@@ -43,7 +71,7 @@ public class Drivetrain {
         double len = Math.sqrt(x * x + y * y);
 
         double fieldCentricX = len * Math.cos(robotAngle);
-        double fieldCentricY = len * Math.sin(robotAngle);
+        double fieldCentricY = (len * Math.sin(robotAngle));
 
         double[] targetPower = normalize(new double[]{
                 (fieldCentricX + fieldCentricY + t),
@@ -52,10 +80,15 @@ public class Drivetrain {
                 (fieldCentricX + fieldCentricY - t)
         });
 
-        fl.setPower(targetPower[0] * power);
-        fr.setPower(targetPower[1] * power);
-        bl.setPower(targetPower[2] * power);
-        br.setPower(targetPower[3] * power);
+        fl.setPower(targetPower[0] * power * 1);
+        fr.setPower(targetPower[1] * power * 0.9958980369);
+        bl.setPower(targetPower[2] * power * 0.9795);
+        br.setPower(targetPower[3] * power * 0.9608);
+//
+//        fl.setPower(targetPower[0] * power);
+//        fr.setPower(targetPower[1] * power);
+//        bl.setPower(targetPower[2] * power);
+//        br.setPower(targetPower[3] * power);
     }
 
     private double[] normalize(double[] values)

@@ -6,13 +6,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
 public class Claw {
-    Servo clawLeft, clawRight;
+    public Servo clawLeft, clawRight;
 
     public static double RIGHT_CLOSED = 0.03;
     public static double LEFT_CLOSED = 0.004;
 
-    public static double RIGHT_OPEN = 0.2;
-    public static double LEFT_OPEN = 0.03;
+    public static double RIGHT_OPEN = 0.3;
+    public static double LEFT_OPEN = 0.05;
 
     public static boolean clawLeftOpen = false;
     public static boolean clawRightOpen = false;

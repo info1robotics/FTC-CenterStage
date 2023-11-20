@@ -5,8 +5,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 @Config
 public class Pivot {
-    public static double PIVOT_DROP = 0.65;
-    public static double PIVOT_COLLECT = 0;
+    public static double PIVOT_DROP = 0.73;
+    public static double PIVOT_TRANSITION = 0.1;
+    public static double PIVOT_COLLECT = 0.029;
 
     public Servo servoLeft, servoRight; // when looking from the intake
     public Pivot(HardwareMap hardwareMap) {
@@ -23,6 +24,11 @@ public class Pivot {
     public void setCollect() {
         servoLeft.setPosition(PIVOT_COLLECT);
         servoRight.setPosition(PIVOT_COLLECT);
+    }
+
+    public void setTransition() {
+        servoLeft.setPosition(PIVOT_TRANSITION);
+        servoRight.setPosition(PIVOT_TRANSITION);
     }
 
     public void setPosLeft(double pos) {

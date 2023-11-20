@@ -6,20 +6,19 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
 public class PivotIntake {
-    public static double PIVOT_DROP = 0;
-    public static double PIVOT_COLLECT = 0;
+    public static double PIVOT_MAX = 0.46;
+    public static double PIVOT_TELEOP = 0.06;
 
     public Servo servoLeft; // when looking from the intake
     public PivotIntake(HardwareMap hardwareMap) {
-        servoLeft = hardwareMap.servo.get("pivotIntakeLeft");
+        servoLeft = hardwareMap.servo.get("pivotIntake");
     }
 
-    public void setDrop() {
-        servoLeft.setPosition(PIVOT_DROP);
+    public void setInit() {
+        servoLeft.setPosition(PIVOT_MAX);
     }
-
-    public void setCollect() {
-        servoLeft.setPosition(PIVOT_COLLECT);
+    public void setNormal() {
+        servoLeft.setPosition(PIVOT_TELEOP);
     }
 
     public void setPosLeft(double pos) {

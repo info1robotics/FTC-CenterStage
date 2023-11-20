@@ -2,13 +2,15 @@ package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
+import org.firstinspires.ftc.teamcode.subsystems.Claw;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.Pivot;
+import org.firstinspires.ftc.teamcode.subsystems.PivotIntake;
 import org.firstinspires.ftc.teamcode.vision.TSEDetectionPipeline;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -19,6 +21,10 @@ public abstract class  AutoBase extends LinearOpMode {
     public OpenCvCamera camera;
     public TSEDetectionPipeline pipeline;
     public Pivot pivot;
+    public Claw claw;
+    public PivotIntake pivotIntake;
+    public Intake intake;
+    public Lift lift;
     static AutoBase instance = null;
 
     public static AutoBase getInstance() {
@@ -41,7 +47,7 @@ public abstract class  AutoBase extends LinearOpMode {
 
     public void onInit() {}
     public void onInitTick() {}
-    public void onStart() {}
+    public void onStart() throws InterruptedException {}
     public void onStartTick() {}
 
     @Override
@@ -50,6 +56,10 @@ public abstract class  AutoBase extends LinearOpMode {
         instance = this;
 //        enableVision();
         pivot = new Pivot(this.hardwareMap);
+        claw = new Claw(this.hardwareMap);
+        lift = new Lift(this.hardwareMap);
+        intake = new Intake(this.hardwareMap);
+        pivotIntake = new PivotIntake(this.hardwareMap);
 //        drive = new MecanumDrive(this.hardwareMap, new Pose2d(0, 0, 0));
         onInit();
         while (!isStarted() && !isStopRequested()) {
@@ -66,7 +76,6 @@ public abstract class  AutoBase extends LinearOpMode {
     public void enableVision() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         telemetry.addData("camera ", cameraMonitorViewId);
-        System.out.println("fdhfjsdfhs");
         System.out.println(cameraMonitorViewId);
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         pipeline = new TSEDetectionPipeline();

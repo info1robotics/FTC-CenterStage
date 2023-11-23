@@ -2,21 +2,18 @@ package org.firstinspires.ftc.teamcode.vision;
 
 import com.acmerobotics.dashboard.config.Config;
 
+import org.firstinspires.ftc.teamcode.common.AutoConstants;
 import org.firstinspires.ftc.teamcode.opmodes.AutoBase;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Config
-public class TSEDetectionPipeline extends OpenCvPipeline {
+public class TSEDetectionPipelineLeftBlue extends OpenCvPipeline {
     /*
      * Some color constants
      */
@@ -26,18 +23,18 @@ public class TSEDetectionPipeline extends OpenCvPipeline {
     /*
      * The core values which define the location and size of the sample regions
      */
-    static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(59, 188);
-    static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(211, 198);
-    static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(458, 188);
+    static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(99 - 40, 188);
+    static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(251 - 40, 153);
+    static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(498 - 40, 188);
     static final int REGION_WIDTH = 125;
     static final int REGION_HEIGHT = 75;
     static final int REGION2_WIDTH = 225;
-    static final int REGION2_HEIGHT = 25;
+    static final int REGION2_HEIGHT = 60;
 
     static final int MIN_RED_AREA = 20;
 
     // Volatile since accessed by OpMode thread w/o synchronization
-    private TSEPosition position = TSEPosition.LEFT;
+    private AutoConstants.TSEPosition position = AutoConstants.TSEPosition.LEFT;
     /*
      * Points which actually define the sample region rectangles, derived from above values
      *
@@ -64,8 +61,8 @@ public class TSEDetectionPipeline extends OpenCvPipeline {
      * Working variables
      */ Mat region1, region2, region3;
     int avg1, avg2, avg3;
-    Scalar lowerYellow = new Scalar(18, 62, 77); // hsv
-    Scalar upperYellow = new Scalar(61, 255, 255); // hsv
+    Scalar lowerYellow = new Scalar(0, 0, 20); // rgb
+    Scalar upperYellow = new Scalar(5, 107, 255); // rgb
 
     Scalar lower;
     Scalar upper;
@@ -73,27 +70,17 @@ public class TSEDetectionPipeline extends OpenCvPipeline {
 
     @Override
     public void init(Mat firstFrame) {
-        /*
-         * Submats are a persistent reference to a region of the parent
-         * buffer. Any changes to the child affect the parent, and the
-         * reverse also holds true.
-         */
-//        region1 = Cb.submat(new Rect(region1_pointA, region1_pointB));
-//        region2 = Cb.submat(new Rect(region2_pointA, region2_pointB));
-//        region3 = Cb.submat(new Rect(region3_pointA, region3_pointB));
     }
 
 
     @Override
     public Mat processFrame(Mat input) {
-        Imgproc.cvtColor(input, input, Imgproc.COLOR_RGB2HSV_FULL);
-        Mat mask = new Mat();
-        Core.inRange(input, lowerYellow, upperYellow, mask);
-        Imgproc.cvtColor(mask, input, Imgproc.COLOR_GRAY2RGB);
+        Imgproc.cvtColor(input, input, Imgproc.COLOR_RGBA2RGB);
+        Core.inRange(input, lowerYellow, upperYellow, input);
 
-        region1 = new Mat(mask, new Rect(region1_pointA, region1_pointB));
-        region2 = new Mat(mask, new Rect(region2_pointA, region2_pointB));
-        region3 = new Mat(mask, new Rect(region3_pointA, region3_pointB));
+        region1 = new Mat(input, new Rect(region1_pointA, region1_pointB));
+        region2 = new Mat(input, new Rect(region2_pointA, region2_pointB));
+        region3 = new Mat(input, new Rect(region3_pointA, region3_pointB));
 
         int sel1 = Core.countNonZero(region1);
         int sel2 = Core.countNonZero(region2);
@@ -103,12 +90,12 @@ public class TSEDetectionPipeline extends OpenCvPipeline {
         AutoBase.getInstance().telemetry.addData("Pixels Mid", sel2);
         AutoBase.getInstance().telemetry.addData("Pixels Right", sel3);
 
-        if (sel1 > 1000) {
-            position = TSEPosition.LEFT;
-        } else if (sel2 > 1000) {
-            position = TSEPosition.CENTER;
-        } else if (sel3 > 1000) {
-            position = TSEPosition.RIGHT;
+        if (sel1 > 1300) {
+            position = AutoConstants.TSEPosition.LEFT;
+        } else if (sel2 > 500) {
+            position = AutoConstants.TSEPosition.CENTER;
+        } else if (sel3 > 1300) {
+            position = AutoConstants.TSEPosition.RIGHT;
         }
 
 
@@ -120,8 +107,6 @@ public class TSEDetectionPipeline extends OpenCvPipeline {
         region2.release();
         region3.release();
 
-        // Release the mask
-        mask.release();
 
         return input;
     }
@@ -130,11 +115,8 @@ public class TSEDetectionPipeline extends OpenCvPipeline {
     /*
      * Call this from the OpMode thread to obtain the latest analysis
      */
-    public TSEPosition getAnalysis() {
+    public AutoConstants.TSEPosition getAnalysis() {
         return position;
     }
 
-    public enum TSEPosition {
-        LEFT, CENTER, RIGHT
-    }
 }

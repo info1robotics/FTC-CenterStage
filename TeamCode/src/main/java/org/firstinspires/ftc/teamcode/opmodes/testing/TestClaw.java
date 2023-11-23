@@ -9,14 +9,15 @@ import org.firstinspires.ftc.teamcode.opmodes.AutoBase;
 @Config
 public class TestClaw extends AutoBase {
     public static boolean open = false;
+
+    public static double clawLeft = 0;
+    public static double clawRight = 0;
+
     @Override
     public void onStartTick() {
         telemetry.addData("test", claw.clawLeft.getPosition());
         telemetry.addData("tes1", claw.clawRight.getPosition());
-        if (open) {
-            claw.open();
-        } else {
-            claw.close();
-        }
+        claw.clawLeft.setPosition(clawLeft);
+        claw.clawRight.setPosition(clawRight);
     }
 }

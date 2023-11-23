@@ -30,6 +30,17 @@ public class Lift {
         liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
+    public void tick() {
+        int currentPosition = liftLeft.getCurrentPosition();
+        if (currentPosition < 12) {
+            Pivot.instance.setCollect();
+        } else if (currentPosition > 12 && currentPosition < 290) {
+            Pivot.instance.setTransition();
+        } else if (currentPosition > 400) {
+            Pivot.instance.setDrop();
+        }
+    }
+
     public void setPower(double power) {
         if (power < -0.6) power = -0.6;
         setRawPower(power);

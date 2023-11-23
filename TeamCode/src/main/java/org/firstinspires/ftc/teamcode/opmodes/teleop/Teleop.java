@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import org.firstinspires.ftc.teamcode.common.GamepadEx;
 import org.firstinspires.ftc.teamcode.subsystems.Claw;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.subsystems.Hook;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.Pivot;
@@ -42,9 +43,11 @@ public class Teleop extends LinearOpMode {
         Lift lift = new Lift(hardwareMap);
         Intake intake = new Intake(hardwareMap);
         PivotIntake pivotIntake = new PivotIntake(hardwareMap);
+        Hook hook = new Hook(hardwareMap);
+        pivot.setCollect();
 
         claw.open();
-        pivotIntake.setNormal();
+        pivotIntake.setInit();
 
         Drivetrain drive = new Drivetrain(hardwareMap);
 
@@ -77,6 +80,8 @@ public class Teleop extends LinearOpMode {
             lastTime = System.currentTimeMillis();
             telemetry.addData("voltage", getBatteryVoltage());
 
+            hook.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
+
 
             if (gamepadEx2.getButtonDown("bumper_left")) {
                 claw.toggle(Claw.Type.LEFT);
@@ -86,20 +91,18 @@ public class Teleop extends LinearOpMode {
             }
 
             if (gamepadEx2.getButtonDown("a")) {
-                 claw.open();
+                if (Claw.clawRightOpen && Claw.clawLeftOpen) {
+                    claw.close();
+                } else if (!Claw.clawRightOpen && !Claw.clawLeftOpen) {
+                    claw.open();
+                } else {
+                    claw.open();
+                }
             }
 
-            // lift logic
-            int currentPosition = lift.liftLeft.getCurrentPosition();
             double rightStickY = -gamepad2.right_stick_y;
             telemetry.addData("Right Stick Y", -gamepad2.right_stick_y);
-            if (currentPosition < 12) {
-                pivot.setCollect();
-            } else if (currentPosition > 12 && currentPosition < 290) {
-                pivot.setTransition();
-            } else if (currentPosition > 400) {
-                pivot.setDrop();
-            }
+
             int a = 0;
             if (rightStickY > 0.1 || rightStickY < -0.1) {
                 if (lift.liftLeft.getCurrentPosition() < Lift.LOWER && rightStickY < -0.1) {
@@ -124,7 +127,7 @@ public class Teleop extends LinearOpMode {
             }
             telemetry.addData("test", a);
 
-
+            lift.tick();
             telemetry.update();
             gamepadEx2.update();
         }

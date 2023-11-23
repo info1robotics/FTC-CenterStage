@@ -6,26 +6,37 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Claw;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.Pivot;
 import org.firstinspires.ftc.teamcode.subsystems.PivotIntake;
-import org.firstinspires.ftc.teamcode.vision.TSEDetectionPipeline;
+import org.firstinspires.ftc.teamcode.vision.TSEDetectionPipelineLeftBlue;
+import org.firstinspires.ftc.teamcode.vision.TSEDetectionPipelineRightRed;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvInternalCamera;
+import org.openftc.easyopencv.OpenCvPipeline;
 
-public abstract class  AutoBase extends LinearOpMode {
+public abstract class AutoBase extends LinearOpMode {
     public OpenCvCamera camera;
-    public TSEDetectionPipeline pipeline;
+    public OpenCvPipeline pipeline;
     public Pivot pivot;
     public Claw claw;
     public PivotIntake pivotIntake;
     public Intake intake;
     public Lift lift;
+    public SampleMecanumDrive drive;
     static AutoBase instance = null;
+    public Pos pos;
+
+    public enum Pos {
+        BLUE_LEFT,
+        BLUE_RIGHT,
+        RED_RIGHT,
+        RED_LEFT
+    }
 
     public static AutoBase getInstance() {
         return instance;
@@ -54,14 +65,15 @@ public abstract class  AutoBase extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         instance = this;
-//        enableVision();
         pivot = new Pivot(this.hardwareMap);
         claw = new Claw(this.hardwareMap);
         lift = new Lift(this.hardwareMap);
         intake = new Intake(this.hardwareMap);
         pivotIntake = new PivotIntake(this.hardwareMap);
-//        drive = new MecanumDrive(this.hardwareMap, new Pose2d(0, 0, 0));
+        drive = new SampleMecanumDrive(this.hardwareMap);
+
         onInit();
+        enableVision();
         while (!isStarted() && !isStopRequested()) {
             onInitTick();
             telemetry.update();
@@ -69,6 +81,7 @@ public abstract class  AutoBase extends LinearOpMode {
         onStart();
         while (opModeIsActive()) {
             onStartTick();
+            drive.update();
             telemetry.update();
         }
     }
@@ -78,7 +91,11 @@ public abstract class  AutoBase extends LinearOpMode {
         telemetry.addData("camera ", cameraMonitorViewId);
         System.out.println(cameraMonitorViewId);
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        pipeline = new TSEDetectionPipeline();
+        if (pos == Pos.BLUE_LEFT) {
+            pipeline = new TSEDetectionPipelineLeftBlue();
+        } else {
+            pipeline = new TSEDetectionPipelineRightRed();
+        }
         camera.setPipeline(pipeline);
 
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()

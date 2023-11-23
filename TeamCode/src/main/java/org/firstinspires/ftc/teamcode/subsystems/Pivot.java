@@ -6,14 +6,17 @@ import com.qualcomm.robotcore.hardware.Servo;
 @Config
 public class Pivot {
     public static double PIVOT_DROP = 0.73;
-    public static double PIVOT_TRANSITION = 0.1;
+    public static double PIVOT_TRANSITION = 0.07;
     public static double PIVOT_COLLECT = 0.029;
+
+    public static Pivot instance;
 
     public Servo servoLeft, servoRight; // when looking from the intake
     public Pivot(HardwareMap hardwareMap) {
         servoLeft = hardwareMap.servo.get("pivotLeft");
         servoRight = hardwareMap.servo.get("pivotRight");
         servoRight.setDirection(Servo.Direction.REVERSE);
+        instance = this;
     }
 
     public void setDrop() {

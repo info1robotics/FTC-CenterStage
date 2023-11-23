@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.Pivot;
 import org.firstinspires.ftc.teamcode.subsystems.PivotIntake;
+import org.firstinspires.ftc.teamcode.tasks.Task;
 import org.firstinspires.ftc.teamcode.vision.TSEDetectionPipelineLeftBlue;
 import org.firstinspires.ftc.teamcode.vision.TSEDetectionPipelineRightRed;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -30,6 +31,7 @@ public abstract class AutoBase extends LinearOpMode {
     public SampleMecanumDrive drive;
     static AutoBase instance = null;
     public Pos pos;
+    public Task task;
 
     public enum Pos {
         BLUE_LEFT,
@@ -79,9 +81,12 @@ public abstract class AutoBase extends LinearOpMode {
             telemetry.update();
         }
         onStart();
-        while (opModeIsActive()) {
+        task.start(this);
+        while (opModeIsActive() && !isStopRequested()) {
+            task.tick();
             onStartTick();
             drive.update();
+            lift.tick();
             telemetry.update();
         }
     }

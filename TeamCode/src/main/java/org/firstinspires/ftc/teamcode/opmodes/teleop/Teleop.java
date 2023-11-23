@@ -128,6 +128,8 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("test", a);
 
             lift.tick();
+            telemetry.addData("fdfsdfs", lift.liftLeft.getCurrentPosition());
+            telemetry.addData("fdfsdfsfgdf", lift.liftRight.getCurrentPosition());
             telemetry.update();
             gamepadEx2.update();
         }

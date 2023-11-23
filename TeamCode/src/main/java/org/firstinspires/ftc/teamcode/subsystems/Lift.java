@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.teamcode.opmodes.AutoBase;
 import org.firstinspires.ftc.teamcode.opmodes.teleop.Teleop;
 
 public class Lift {
@@ -39,6 +40,11 @@ public class Lift {
         } else if (currentPosition > 400) {
             Pivot.instance.setDrop();
         }
+
+//        if (AutoBase.getInstance() != null) {
+//            AutoBase.getInstance().telemetry.addData("dada", liftLeft.getCurrentPosition());
+//            AutoBase.getInstance().telemetry.addData("2dada", System.currentTimeMillis());
+//        }
     }
 
     public void setPower(double power) {

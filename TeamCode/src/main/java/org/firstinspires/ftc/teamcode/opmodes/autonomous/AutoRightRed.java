@@ -2,6 +2,11 @@ package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
 import static org.firstinspires.ftc.teamcode.common.AutoConstants.ROBOT_HEIGHT_HALF;
 import static org.firstinspires.ftc.teamcode.common.AutoConstants.TILE_SIZE;
+import static org.firstinspires.ftc.teamcode.tasks.TaskBuilder.execute;
+import static org.firstinspires.ftc.teamcode.tasks.TaskBuilder.parallel;
+import static org.firstinspires.ftc.teamcode.tasks.TaskBuilder.serial;
+import static org.firstinspires.ftc.teamcode.tasks.TaskBuilder.sleepms;
+import static org.firstinspires.ftc.teamcode.tasks.TaskBuilder.trajectory;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -18,24 +23,18 @@ import org.firstinspires.ftc.teamcode.vision.TSEDetectionPipelineRightRed;
 public class AutoRightRed extends AutoBase {
     Pose2d startPose = new Pose2d(TILE_SIZE * 0.5, -TILE_SIZE * 3 + ROBOT_HEIGHT_HALF, Math.toRadians(90));
 
-    TrajectorySequence left, middle, right, toFollow;
+    TrajectorySequence left, right, toFollow;
 
     // Since there is plenty of room for correction, we don't need to align ourselves and can rely on the PID correction
     Pose2d averageBackdrop = new Pose2d(TILE_SIZE * 2, -TILE_SIZE / 2 + 3, Math.toRadians(0));
 
     TrajectorySequence cycles;
 
+    Trajectory middleToLine, middleToBackdrop;
+
     @Override
     public void onInitTick() {
-        AutoConstants.TSEPosition pos = ((TSEDetectionPipelineRightRed)pipeline).getAnalysis();
-
-        if (pos == AutoConstants.TSEPosition.LEFT) {
-            toFollow = left;
-        } else if (pos == AutoConstants.TSEPosition.CENTER) {
-            toFollow = middle;
-        } else if (pos == AutoConstants.TSEPosition.RIGHT) {
-            toFollow = right;
-        }
+        AutoConstants.TSEPosition pos = ((TSEDetectionPipelineRightRed) pipeline).getAnalysis();
 
         pivot.setTransition();
         claw.close(Claw.Type.LEFT);
@@ -52,19 +51,13 @@ public class AutoRightRed extends AutoBase {
                 .lineToConstantHeading(new Vector2d(TILE_SIZE * 2, -TILE_SIZE - 8.9))
                 .build();
 
-        middle = drive.trajectorySequenceBuilder(startPose)
+        middleToLine = drive.trajectoryBuilder(startPose)
                 .lineToLinearHeading(new Pose2d(TILE_SIZE * 1, -TILE_SIZE - 1, Math.toRadians(0)))
-                .waitSeconds(1)
-                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    intake.setPower(0.5);
-                })
-                .waitSeconds(1)
-                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    intake.setPower(0);
-                    lift.setTargetPosition(250, 0.5);
-                })
-                .lineToConstantHeading(new Vector2d(TILE_SIZE * 2, -TILE_SIZE * 1.5))
-                 .build();
+                .build();
+
+        middleToBackdrop = drive.trajectoryBuilder(middleToLine.end())
+                .lineToConstantHeading(new Vector2d(TILE_SIZE * 1.5, -TILE_SIZE * 1 - 10))
+                .build();
 
         right = drive.trajectorySequenceBuilder(startPose)
                 .lineToLinearHeading(new Pose2d(TILE_SIZE * 1.5, -TILE_SIZE - 4, Math.toRadians(0)))
@@ -85,11 +78,19 @@ public class AutoRightRed extends AutoBase {
                 })
                 .build();
 
-    }
-
-    @Override
-    public void onStart() throws InterruptedException {
-        drive.followTrajectorySequence(middle);
-//        drive.followTrajectorySequence(cycles);
+        task = serial(
+                trajectory(middleToLine),
+                execute(() -> intake.setPower(0.5)),
+                sleepms(1000),
+                execute(() -> intake.setPower(0)),
+                parallel(
+                        trajectory(middleToBackdrop),
+                        serial(
+                                sleepms(100),
+                                execute(() -> lift.setTargetPosition(820, 1))
+                        )
+                ),
+                sleepms(10000)
+        );
     }
 }

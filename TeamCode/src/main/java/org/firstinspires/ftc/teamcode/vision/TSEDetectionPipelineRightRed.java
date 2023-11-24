@@ -90,11 +90,11 @@ public class TSEDetectionPipelineRightRed extends OpenCvPipeline {
         AutoBase.getInstance().telemetry.addData("Pixels Mid", sel2);
         AutoBase.getInstance().telemetry.addData("Pixels Right", sel3);
 
-        if (sel1 > 1300) {
-            position = AutoConstants.TSEPosition.LEFT.LEFT;
+        if (sel1 > 1000) {
+            position = AutoConstants.TSEPosition.LEFT;
         } else if (sel2 > 500) {
             position = AutoConstants.TSEPosition.CENTER;
-        } else if (sel3 > 1300) {
+        } else if (sel3 > 1000) {
             position = AutoConstants.TSEPosition.RIGHT;
         }
 

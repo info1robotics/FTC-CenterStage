@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
 public class PivotIntake {
-    public static double PIVOT_MAX = 0.46;
-    public static double PIVOT_TELEOP = 0.06;
+    public static double PIVOT_MAX = 0.35;
+    public static double PIVOT_TELEOP = 0.00;
 
     public Servo servoLeft; // when looking from the intake
     public PivotIntake(HardwareMap hardwareMap) {

@@ -62,9 +62,6 @@ public class Lift {
         }
         liftLeft.setPower(power);
         liftRight.setPower(power);
-        Teleop.instance.telemetry.addData("power", liftLeft.getPower() + liftRight.getPower());
-        Teleop.instance.telemetry.addData("mode left", liftLeft.getMode());
-        Teleop.instance.telemetry.addData("mode right", liftRight.getMode());
     }
 
     public void setTargetPosition(int position, double power) {
@@ -79,8 +76,5 @@ public class Lift {
         }
         liftLeft.setPower(power);
         liftRight.setPower(power);
-        Teleop.instance.telemetry.addData("power", liftLeft.getPower());
-        Teleop.instance.telemetry.addData("mode left", liftLeft.getMode());
-        Teleop.instance.telemetry.addData("mode right", liftRight.getMode());
     }
 }

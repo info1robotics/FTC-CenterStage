@@ -57,9 +57,7 @@ public class Teleop extends LinearOpMode {
 
         new Thread(() -> {
             while (opModeIsActive() && !isStopRequested()) {
-                drive.vectorMove(gamepad1.left_stick_x, -gamepad1.left_stick_y,
-                        (gamepad1.right_trigger - gamepad1.left_trigger),
-                        1.0);
+                drive.vectorMove(gamepad1.left_stick_x, -gamepad1.left_stick_y, (gamepad1.right_trigger - gamepad1.left_trigger), gamepad1.a ? 0.4 : 1.0);
                 gamepadEx1.update();
             }
         }).start();
@@ -118,7 +116,11 @@ public class Teleop extends LinearOpMode {
             } else {
                 if (gamepad2.right_stick_button) {
                     a = 5;
-                    lift.setTargetPosition(-5, .5);
+                    if (lift.liftLeft.getCurrentPosition() < 350) {
+                        lift.setTargetPosition(-5, 0.5);
+                    } else {
+                        lift.setTargetPosition(-5, 1);
+                    }
                 } else {
                     a = 4;
                     lift.setTargetPosition(lift.liftLeft.getCurrentPosition(), .9);

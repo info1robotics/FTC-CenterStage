@@ -4,6 +4,8 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 
+import java.util.function.Supplier;
+
 
 public class TaskBuilder {
     public static SerialTask serial(Task... task) {
@@ -12,6 +14,9 @@ public class TaskBuilder {
 
     public static ParallelTask parallel(Task... task) {
         return new ParallelTask(task);
+    }
+    public static ConditionalTask conditional(Supplier<Boolean> condition, Task... task) {
+        return new ConditionalTask(condition, task);
     }
 
     public static SleepTask sleepms(long ms) {

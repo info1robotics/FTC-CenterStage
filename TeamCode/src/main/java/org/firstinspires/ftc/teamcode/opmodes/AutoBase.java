@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Pivot;
 import org.firstinspires.ftc.teamcode.subsystems.PivotIntake;
 import org.firstinspires.ftc.teamcode.tasks.Task;
 import org.firstinspires.ftc.teamcode.vision.TSEDetectionPipelineLeftBlue;
+import org.firstinspires.ftc.teamcode.vision.TSEDetectionPipelineRightBlue;
 import org.firstinspires.ftc.teamcode.vision.TSEDetectionPipelineRightRed;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -30,7 +31,7 @@ public abstract class AutoBase extends LinearOpMode {
     public Lift lift;
     public SampleMecanumDrive drive;
     static AutoBase instance = null;
-    public Pos pos;
+    public Pos startPos;
     public Task task;
 
     public enum Pos {
@@ -81,9 +82,9 @@ public abstract class AutoBase extends LinearOpMode {
             telemetry.update();
         }
         onStart();
-        task.start(this);
+        if (task != null) task.start(this);
         while (opModeIsActive() && !isStopRequested()) {
-            task.tick();
+            if (task != null) task.tick();
             onStartTick();
             drive.update();
             lift.tick();
@@ -96,10 +97,12 @@ public abstract class AutoBase extends LinearOpMode {
         telemetry.addData("camera ", cameraMonitorViewId);
         System.out.println(cameraMonitorViewId);
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        if (pos == Pos.BLUE_LEFT) {
+        if (startPos == Pos.BLUE_LEFT) {
             pipeline = new TSEDetectionPipelineLeftBlue();
-        } else {
+        } else if (startPos == Pos.RED_RIGHT) {
             pipeline = new TSEDetectionPipelineRightRed();
+        } else if (startPos == Pos.BLUE_RIGHT) {
+            pipeline = new TSEDetectionPipelineRightBlue();
         }
         camera.setPipeline(pipeline);
 

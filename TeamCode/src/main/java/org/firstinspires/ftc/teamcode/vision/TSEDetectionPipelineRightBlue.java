@@ -13,7 +13,7 @@ import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 @Config
-public class TSEDetectionPipelineLeftBlue extends OpenCvPipeline {
+public class TSEDetectionPipelineRightBlue extends OpenCvPipeline {
     /*
      * Some color constants
      */
@@ -23,15 +23,14 @@ public class TSEDetectionPipelineLeftBlue extends OpenCvPipeline {
     /*
      * The core values which define the location and size of the sample regions
      */
-    static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(99 - 40, 188);
-    static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(251 - 40, 153);
-    static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(498 - 40, 188);
+    static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(99, 188);
+    static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(251, 153);
+    static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(498, 188);
     static final int REGION_WIDTH = 125;
     static final int REGION_HEIGHT = 75;
     static final int REGION2_WIDTH = 225;
     static final int REGION2_HEIGHT = 60;
 
-    static final int MIN_RED_AREA = 20;
 
     // Volatile since accessed by OpMode thread w/o synchronization
     private AutoConstants.TSEPosition position = AutoConstants.TSEPosition.LEFT;

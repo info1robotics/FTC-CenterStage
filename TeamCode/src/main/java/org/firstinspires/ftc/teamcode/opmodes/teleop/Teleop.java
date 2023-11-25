@@ -89,13 +89,9 @@ public class Teleop extends LinearOpMode {
             }
 
             if (gamepadEx2.getButtonDown("a")) {
-                if (Claw.clawRightOpen && Claw.clawLeftOpen) {
-                    claw.close();
-                } else if (!Claw.clawRightOpen && !Claw.clawLeftOpen) {
-                    claw.open();
-                } else {
-                    claw.open();
-                }
+                claw.open();
+            } else if (gamepadEx2.getButtonDown("b")) {
+                claw.close();
             }
 
             double rightStickY = -gamepad2.right_stick_y;

@@ -44,7 +44,7 @@ public class AutoLeftBlue extends AutoBase {
         drive.setPoseEstimate(startPose);
 
         Trajectory rightToLine = drive.trajectoryBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(TILE_SIZE * 0.5 - 1, TILE_SIZE + 4, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(TILE_SIZE * 0.5 - 5, TILE_SIZE + 4, Math.toRadians(0)))
                 .build();
 
         Trajectory rightToBackdrop = drive.trajectoryBuilder(rightToLine.end())

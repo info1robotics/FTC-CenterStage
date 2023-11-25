@@ -33,7 +33,7 @@ public class AutoRightBlue extends AutoBase {
     @Override
     public void onInitTick() {
         pos = ((TSEDetectionPipelineRightBlue) pipeline).getAnalysis();
-        claw.close(Claw.Type.LEFT);
+        claw.close(Claw.Type.RIGHT);
         telemetry.addData("pos", pos.toString());
 
     }
@@ -45,7 +45,7 @@ public class AutoRightBlue extends AutoBase {
         drive.setPoseEstimate(startPose);
 
         Trajectory rightToLine = drive.trajectoryBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-TILE_SIZE * 1.5 - 12, TILE_SIZE - 6.5, Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(-TILE_SIZE * 1.5 - 14.5, TILE_SIZE - 6.5, Math.toRadians(-90)))
                 .build();
 
         Trajectory rightAlignBridge = drive.trajectoryBuilder(rightToLine.end())
@@ -53,7 +53,7 @@ public class AutoRightBlue extends AutoBase {
                 .build();
 
         Trajectory middleToLine = drive.trajectoryBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-TILE_SIZE * 2, TILE_SIZE - 1, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-TILE_SIZE * 2, TILE_SIZE + 1.5, Math.toRadians(180)))
                 .build();
 
         Trajectory middleAlignBridge = drive.trajectoryBuilder(middleToLine.end())
@@ -61,7 +61,7 @@ public class AutoRightBlue extends AutoBase {
                 .build();
 
         Trajectory leftToLine = drive.trajectoryBuilder(startPose)
-                .splineToLinearHeading(new Pose2d(-TILE_SIZE * 1.5, TILE_SIZE * 1.5 + 2, Math.toRadians(180)), Math.toRadians(80))
+                .splineToLinearHeading(new Pose2d(-TILE_SIZE * 1.5, TILE_SIZE * 1.5, Math.toRadians(180)), Math.toRadians(80))
                 .build();
 
         Trajectory leftAlignBridge = drive.trajectoryBuilder(leftToLine.end())
@@ -73,18 +73,18 @@ public class AutoRightBlue extends AutoBase {
                 .build();
 
         Trajectory leftToBackdrop = drive.trajectoryBuilder(afterBridge.end())
-                .lineToConstantHeading(new Vector2d(TILE_SIZE * 1.5 + 6.8, TILE_SIZE + 10))
+                .lineToConstantHeading(new Vector2d(TILE_SIZE * 1.5 + 6.8, TILE_SIZE + 14.5))
                 .build();
 
         Trajectory middleToBackdrop = drive.trajectoryBuilder(afterBridge.end())
-                .lineToConstantHeading(new Vector2d(TILE_SIZE * 1.5 + 6.8, TILE_SIZE * 1 + 5.7))
+                .lineToConstantHeading(new Vector2d(TILE_SIZE * 1.5 + 6.8, TILE_SIZE * 1 + 6.35))
                 .build();
 
         Trajectory rightToBackdrop = drive.trajectoryBuilder(afterBridge.end())
-                .lineToConstantHeading(new Vector2d(TILE_SIZE * 1.5 + 4, TILE_SIZE + 1))
+                .lineToConstantHeading(new Vector2d(TILE_SIZE * 1.5 + 4, TILE_SIZE - 3))
                 .build();
 
-        Trajectory backdropToPark = drive.trajectoryBuilder(new Pose2d(TILE_SIZE * 1.5 + 3, TILE_SIZE * 1 + 4, Math.toRadians(0)))
+        Trajectory backdropToPark = drive.trajectoryBuilder(new Pose2d(TILE_SIZE * 1.5 + 9, TILE_SIZE * 1 + 4, Math.toRadians(0)))
                 .lineToLinearHeading(new Pose2d(TILE_SIZE * 2, TILE_SIZE * 3 - 12, Math.toRadians(-90)))
                 .build();
 
@@ -111,7 +111,7 @@ public class AutoRightBlue extends AutoBase {
                 ),
                 sleepms(200),
                 execute(() -> {
-                    claw.open(Claw.Type.LEFT);
+                    claw.open(Claw.Type.RIGHT);
                     lift.setTargetPosition(1210, 1);
                 }),
                 sleepms(380),

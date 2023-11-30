@@ -9,4 +9,9 @@ public class AutoConstants {
         CENTER,
         RIGHT
     }
+
+    public static double HEADING_TO_BLUE = Math.toRadians(90);
+    public static double HEADING_TO_RED = Math.toRadians(-90);
+    public static double HEADING_TO_BACKDROP = Math.toRadians(0);
+    public static double HEADING_TO_STACK = Math.toRadians(180);
 }

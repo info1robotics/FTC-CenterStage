@@ -5,6 +5,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
+
 
 public class Drivetrain {
     public DcMotor fl, fr, bl, br;
@@ -62,19 +65,17 @@ public class Drivetrain {
     }
 
     public void vectorMoveFieldCentric(double x, double y, double t, double power, double headingRad) {
-        double joystickAngle = Math.atan2(y, x);
-        double robotAngle = joystickAngle - headingRad;
-        double len = Math.sqrt(x * x + y * y);
-
-        double fieldCentricX = len * Math.cos(robotAngle);
-        double fieldCentricY = (len * Math.sin(robotAngle));
+        y = -y;
+        double xRot = (x * Math.cos(headingRad) - y * Math.sin(headingRad)) * SampleMecanumDrive.LATERAL_MULTIPLIER;
+        double yRot = x * Math.sin(headingRad) + y * Math.cos(headingRad);
 
         double[] targetPower = normalize(new double[]{
-                (fieldCentricX + fieldCentricY + t),
-                (fieldCentricY - fieldCentricX - t),
-                (fieldCentricY - fieldCentricX + t),
-                (fieldCentricX + fieldCentricY - t)
+                (xRot + yRot + t),
+                (xRot - yRot - t),
+                (xRot - yRot + t),
+                (xRot + yRot - t)
         });
+
 
         fl.setPower(targetPower[0] * power * 1);
         fr.setPower(targetPower[1] * power * 0.9958980369);

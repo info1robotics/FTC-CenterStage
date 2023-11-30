@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.common.GamepadEx;
+import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Claw;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.subsystems.Hook;
@@ -43,7 +44,7 @@ public class Teleop extends LinearOpMode {
         Lift lift = new Lift(hardwareMap);
         Intake intake = new Intake(hardwareMap);
         PivotIntake pivotIntake = new PivotIntake(hardwareMap);
-        Hook hook = new Hook(hardwareMap);
+//        Hook hook = new Hook(hardwareMap);
         pivot.setCollect();
 
         claw.open();
@@ -51,16 +52,22 @@ public class Teleop extends LinearOpMode {
 
         Drivetrain drive = new Drivetrain(hardwareMap);
 
+        SampleMecanumDrive rrDrive = new SampleMecanumDrive(this.hardwareMap);
 
         waitForStart();
 
 
         new Thread(() -> {
             while (opModeIsActive() && !isStopRequested()) {
-                drive.vectorMove(gamepad1.left_stick_x, -gamepad1.left_stick_y, (gamepad1.right_trigger - gamepad1.left_trigger), gamepad1.a ? 0.4 : 1.0);
+                rrDrive.update();
+                drive.vectorMove(gamepad1.left_stick_x, -gamepad1.left_stick_y,
+                        (gamepad1.right_trigger - gamepad1.left_trigger),
+                        gamepad1.a ? 0.4 : 1.0);
                 gamepadEx1.update();
             }
         }).start();
+
+//        hook.setIdle();
 
         long lastTime = System.currentTimeMillis();
         while (opModeIsActive() && !isStopRequested()) {
@@ -78,7 +85,7 @@ public class Teleop extends LinearOpMode {
             lastTime = System.currentTimeMillis();
             telemetry.addData("voltage", getBatteryVoltage());
 
-            hook.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
+//            hook.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
 
 
             if (gamepadEx2.getButtonDown("bumper_left")) {
@@ -93,6 +100,20 @@ public class Teleop extends LinearOpMode {
             } else if (gamepadEx2.getButtonDown("b")) {
                 claw.close();
             }
+
+//            telemetry.addData("hook pos", hook.actuator.getCurrentPosition());
+
+//            if (gamepadEx2.getButtonDown("dpad_right")) {
+//                hook.setLift();
+//            } else if (gamepadEx2.getButtonDown("dpad_left")) {
+//                hook.setIdle();
+//            }
+//
+//            if (gamepadEx2.getButtonDown("y")) {
+//                hook.enableServo();
+//            } else if (gamepadEx2.getButtonDown("x")) {
+//                hook.disableServo();
+//            }
 
             double rightStickY = -gamepad2.right_stick_y;
             telemetry.addData("Right Stick Y", -gamepad2.right_stick_y);

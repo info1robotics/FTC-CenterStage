@@ -15,7 +15,7 @@ import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 @Config
-public class TSEDetectionPipelineLeftBlue extends OpenCvPipeline {
+public class TSEDetectionPipelineLeftRed extends OpenCvPipeline {
     /*
      * Some color constants
      */
@@ -63,8 +63,8 @@ public class TSEDetectionPipelineLeftBlue extends OpenCvPipeline {
      * Working variables
      */ Mat region1, region2, region3;
     int avg1, avg2, avg3;
-    Scalar lowerYellow = new Scalar(0, 0, 20); // rgb
-    Scalar upperYellow = new Scalar(5, 107, 255); // rgb
+    Scalar lowerYellow = new Scalar(50, 0, 0); // rgb
+    Scalar upperYellow = new Scalar(170, 40, 40); // rgb
 
     Scalar lower;
     Scalar upper;
@@ -112,12 +112,9 @@ public class TSEDetectionPipelineLeftBlue extends OpenCvPipeline {
 
             try {
                 sleep(100);
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
             }
-        } catch(Exception e) {
-
-        }
-
+        } catch (Exception e) {}
 
         return input;
     }

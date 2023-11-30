@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.vision;
 
+import static java.lang.Thread.sleep;
+
 import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.teamcode.common.AutoConstants;
@@ -24,12 +26,12 @@ public class TSEDetectionPipelineRightBlue extends OpenCvPipeline {
      * The core values which define the location and size of the sample regions
      */
     static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(99, 188);
-    static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(251, 153);
+    static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(251, 153 + 30);
     static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(498, 188);
     static final int REGION_WIDTH = 125;
-    static final int REGION_HEIGHT = 75;
+    static final int REGION_HEIGHT = 75 + 40;
     static final int REGION2_WIDTH = 225;
-    static final int REGION2_HEIGHT = 60;
+    static final int REGION2_HEIGHT = 60 + 40;
 
 
     // Volatile since accessed by OpMode thread w/o synchronization
@@ -74,38 +76,46 @@ public class TSEDetectionPipelineRightBlue extends OpenCvPipeline {
 
     @Override
     public Mat processFrame(Mat input) {
-        Imgproc.cvtColor(input, input, Imgproc.COLOR_RGBA2RGB);
-        Core.inRange(input, lowerYellow, upperYellow, input);
+        try {
+            Imgproc.cvtColor(input, input, Imgproc.COLOR_RGBA2RGB);
+            Core.inRange(input, lowerYellow, upperYellow, input);
 
-        region1 = new Mat(input, new Rect(region1_pointA, region1_pointB));
-        region2 = new Mat(input, new Rect(region2_pointA, region2_pointB));
-        region3 = new Mat(input, new Rect(region3_pointA, region3_pointB));
+            region1 = new Mat(input, new Rect(region1_pointA, region1_pointB));
+            region2 = new Mat(input, new Rect(region2_pointA, region2_pointB));
+            region3 = new Mat(input, new Rect(region3_pointA, region3_pointB));
 
-        int sel1 = Core.countNonZero(region1);
-        int sel2 = Core.countNonZero(region2);
-        int sel3 = Core.countNonZero(region3);
+            int sel1 = Core.countNonZero(region1);
+            int sel2 = Core.countNonZero(region2);
+            int sel3 = Core.countNonZero(region3);
 
-        AutoBase.getInstance().telemetry.addData("Pixels Left", sel1);
-        AutoBase.getInstance().telemetry.addData("Pixels Mid", sel2);
-        AutoBase.getInstance().telemetry.addData("Pixels Right", sel3);
+            AutoBase.getInstance().telemetry.addData("Pixels Left", sel1);
+            AutoBase.getInstance().telemetry.addData("Pixels Mid", sel2);
+            AutoBase.getInstance().telemetry.addData("Pixels Right", sel3);
 
-        if (sel1 > 500) {
-            position = AutoConstants.TSEPosition.LEFT;
-        } else if (sel2 > 500) {
-            position = AutoConstants.TSEPosition.CENTER;
-        } else if (sel3 > 500) {
-            position = AutoConstants.TSEPosition.RIGHT;
+            if (sel1 > 500) {
+                position = AutoConstants.TSEPosition.LEFT;
+            } else if (sel2 > 500) {
+                position = AutoConstants.TSEPosition.CENTER;
+            } else if (sel3 > 500) {
+                position = AutoConstants.TSEPosition.RIGHT;
+            }
+
+
+            Imgproc.rectangle(input, region1_pointA, region1_pointB, BLUE, 2);
+            Imgproc.rectangle(input, region2_pointA, region2_pointB, BLUE, 2);
+            Imgproc.rectangle(input, region3_pointA, region3_pointB, BLUE, 2);
+
+            region1.release();
+            region2.release();
+            region3.release();
+
+            try {
+                sleep(100);
+            } catch (InterruptedException e) {
+            }
+        } catch (Exception e) {
+
         }
-
-
-        Imgproc.rectangle(input, region1_pointA, region1_pointB, BLUE, 2);
-        Imgproc.rectangle(input, region2_pointA, region2_pointB, BLUE, 2);
-        Imgproc.rectangle(input, region3_pointA, region3_pointB, BLUE, 2);
-
-        region1.release();
-        region2.release();
-        region3.release();
-
 
         return input;
     }

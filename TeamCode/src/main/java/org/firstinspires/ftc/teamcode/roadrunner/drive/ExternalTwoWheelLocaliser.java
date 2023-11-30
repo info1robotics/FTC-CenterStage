@@ -8,6 +8,9 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.localization.TwoTrackingWheelLocalizer;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.roadrunner.util.Encoder;
 
 import java.util.Arrays;
@@ -27,7 +30,7 @@ import java.util.List;
  *
  */
 @Config
-public class TwoWheelLocaliser extends TwoTrackingWheelLocalizer {
+public class ExternalTwoWheelLocaliser extends TwoTrackingWheelLocalizer {
     public static double TICKS_PER_REV = 8192;
     public static double WHEEL_RADIUS = 0.688975; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
@@ -39,19 +42,20 @@ public class TwoWheelLocaliser extends TwoTrackingWheelLocalizer {
 
     public static double X_MULTIPLIER = 1.009039668191;
     public static double Y_MULTIPLIER = 1.0;
-    private final SampleMecanumDrive drive;
+    private final IMU imu;
 
-    private Encoder parallelEncoder, perpEncoder;
+    private final Encoder parallelEncoder;
+    private final Encoder perpEncoder;
 
     private List<Integer> lastEncPositions, lastEncVels;
 
-    public TwoWheelLocaliser(HardwareMap hardwareMap, SampleMecanumDrive drive) {
+    public ExternalTwoWheelLocaliser(HardwareMap hardwareMap, IMU imu) {
         super(Arrays.asList(
                 new Pose2d(PARALLEL_FORWARD, PARALLEL_LATERAL, 0), // left
                 new Pose2d(PERPENDICULAR_FORWARD, PERPENDICULAR_LATERAL, Math.toRadians(90)) // front
         ));
 
-        this.drive = drive;
+        this.imu = imu;
 
 //        leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "intake")); // parallel
         parallelEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "BR")); // parallel
@@ -94,13 +98,13 @@ public class TwoWheelLocaliser extends TwoTrackingWheelLocalizer {
 
     @Override
     public double getHeading() {
-        return drive.getRawExternalHeading();
+        return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
     }
 
     @Nullable
     @Override
     public Double getHeadingVelocity() {
-        return drive.getExternalHeadingVelocity();
+        return (double) imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate;
     }
 
 

@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Pivot;
 import org.firstinspires.ftc.teamcode.subsystems.PivotIntake;
 import org.firstinspires.ftc.teamcode.tasks.Task;
 import org.firstinspires.ftc.teamcode.vision.TSEDetectionPipelineLeftBlue;
+import org.firstinspires.ftc.teamcode.vision.TSEDetectionPipelineLeftRed;
 import org.firstinspires.ftc.teamcode.vision.TSEDetectionPipelineRightBlue;
 import org.firstinspires.ftc.teamcode.vision.TSEDetectionPipelineRightRed;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -78,6 +79,7 @@ public abstract class AutoBase extends LinearOpMode {
         onInit();
         enableVision();
         while (!isStarted() && !isStopRequested()) {
+            drive.update();
             onInitTick();
             telemetry.update();
         }
@@ -103,25 +105,29 @@ public abstract class AutoBase extends LinearOpMode {
             pipeline = new TSEDetectionPipelineRightRed();
         } else if (startPos == Pos.BLUE_RIGHT) {
             pipeline = new TSEDetectionPipelineRightBlue();
+        } else if (startPos == Pos.RED_LEFT) {
+            pipeline = new TSEDetectionPipelineLeftRed();
         }
         camera.setPipeline(pipeline);
 
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
-            @Override
-            public void onOpened()
-            {
-                camera.startStreaming(640,360, OpenCvCameraRotation.UPRIGHT);
-            }
+        try {
 
-            @Override
-            public void onError(int errorCode)
-            {
-                /*
-                 * This will be called if the camera could not be opened
-                 */
-            }
-        });
+            camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+                @Override
+                public void onOpened() {
+                    camera.startStreaming(640, 360, OpenCvCameraRotation.UPRIGHT);
+                }
+
+                @Override
+                public void onError(int errorCode) {
+                    /*
+                     * This will be called if the camera could not be opened
+                     */
+                }
+            });
+        } catch (Exception e) {
+
+        }
 
     }
 }

@@ -26,14 +26,14 @@ import java.util.function.Supplier;
 
 @Autonomous
 public class AutoRightBlue extends AutoBase {
-    Pose2d startPose = new Pose2d(-TILE_SIZE * 1.5, TILE_SIZE * 3 - ROBOT_HEIGHT_HALF, Math.toRadians(-90));
+    Pose2d startPose = new Pose2d(-TILE_SIZE * 1.5 - 3.15, TILE_SIZE * 3 - ROBOT_HEIGHT_HALF, Math.toRadians(-90));
 
     AutoConstants.TSEPosition pos = AutoConstants.TSEPosition.LEFT;
 
     @Override
     public void onInitTick() {
         pos = ((TSEDetectionPipelineRightBlue) pipeline).getAnalysis();
-        claw.close(Claw.Type.RIGHT);
+        claw.close(Claw.Type.LEFT);
         telemetry.addData("pos", pos.toString());
 
     }
@@ -45,7 +45,7 @@ public class AutoRightBlue extends AutoBase {
         drive.setPoseEstimate(startPose);
 
         Trajectory rightToLine = drive.trajectoryBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-TILE_SIZE * 1.5 - 14.5, TILE_SIZE - 6.5, Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(-TILE_SIZE * 1.5 - 12.3, TILE_SIZE - 6.5, Math.toRadians(-90)))
                 .build();
 
         Trajectory rightAlignBridge = drive.trajectoryBuilder(rightToLine.end())
@@ -61,7 +61,7 @@ public class AutoRightBlue extends AutoBase {
                 .build();
 
         Trajectory leftToLine = drive.trajectoryBuilder(startPose)
-                .splineToLinearHeading(new Pose2d(-TILE_SIZE * 1.5, TILE_SIZE * 1.5, Math.toRadians(180)), Math.toRadians(80))
+                .splineToLinearHeading(new Pose2d(-TILE_SIZE * 1.5, TILE_SIZE * 1.5 - 2, Math.toRadians(180)), Math.toRadians(-60))
                 .build();
 
         Trajectory leftAlignBridge = drive.trajectoryBuilder(leftToLine.end())
@@ -73,19 +73,19 @@ public class AutoRightBlue extends AutoBase {
                 .build();
 
         Trajectory leftToBackdrop = drive.trajectoryBuilder(afterBridge.end())
-                .lineToConstantHeading(new Vector2d(TILE_SIZE * 1.5 + 6.8, TILE_SIZE + 14.5))
+                .lineToConstantHeading(new Vector2d(TILE_SIZE * 1.5 + 6.5, TILE_SIZE + 9.5))
                 .build();
 
         Trajectory middleToBackdrop = drive.trajectoryBuilder(afterBridge.end())
-                .lineToConstantHeading(new Vector2d(TILE_SIZE * 1.5 + 6.8, TILE_SIZE * 1 + 6.35))
+                .lineToConstantHeading(new Vector2d(TILE_SIZE * 1.5 + 6.5, TILE_SIZE * 1 + 1.55))
                 .build();
 
         Trajectory rightToBackdrop = drive.trajectoryBuilder(afterBridge.end())
-                .lineToConstantHeading(new Vector2d(TILE_SIZE * 1.5 + 4, TILE_SIZE - 3))
+                .lineToConstantHeading(new Vector2d(TILE_SIZE * 1.5 + 5.9, TILE_SIZE - 4))
                 .build();
 
-        Trajectory backdropToPark = drive.trajectoryBuilder(new Pose2d(TILE_SIZE * 1.5 + 9, TILE_SIZE * 1 + 4, Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(TILE_SIZE * 2, TILE_SIZE * 3 - 12, Math.toRadians(-90)))
+        Trajectory backdropToPark = drive.trajectoryBuilder(new Pose2d(TILE_SIZE * 1.5 + 3, TILE_SIZE * 1 + 4, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(TILE_SIZE * 2, TILE_SIZE * 3 - 20, Math.toRadians(-90)))
                 .build();
 
         task = serial(
@@ -107,18 +107,18 @@ public class AutoRightBlue extends AutoBase {
                         conditional(() -> pos == AutoConstants.TSEPosition.LEFT, trajectory(leftToBackdrop)),
                         conditional(() -> pos == AutoConstants.TSEPosition.CENTER, trajectory(middleToBackdrop)),
                         conditional(() -> pos == AutoConstants.TSEPosition.RIGHT, trajectory(rightToBackdrop)),
-                        execute(() -> lift.setTargetPosition(1050, 1))
+                        execute(() -> lift.setTargetPosition(950, 1))
                 ),
                 sleepms(200),
                 execute(() -> {
-                    claw.open(Claw.Type.RIGHT);
-                    lift.setTargetPosition(1210, 1);
+                    claw.open(Claw.Type.LEFT);
+                    lift.setTargetPosition(1110, 1);
                 }),
                 sleepms(380),
                 parallel(
                         trajectory(backdropToPark),
                         serial(
-                                sleepms(200),
+                                sleepms(750),
                                 execute(() -> lift.setTargetPosition(0, 1))
                         )
                 ),

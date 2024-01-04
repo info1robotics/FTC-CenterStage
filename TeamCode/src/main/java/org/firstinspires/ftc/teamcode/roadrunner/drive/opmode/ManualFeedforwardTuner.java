@@ -16,6 +16,7 @@ import com.acmerobotics.roadrunner.kinematics.Kinematics;
 import com.acmerobotics.roadrunner.profile.MotionProfile;
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
 import com.acmerobotics.roadrunner.profile.MotionState;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -75,6 +76,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());
 
         drive = new SampleMecanumDrive(hardwareMap);
+        Pose2d startPose = drive.getPoseEstimate();
 
         final VoltageSensor voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
@@ -83,12 +85,18 @@ public class ManualFeedforwardTuner extends LinearOpMode {
         NanoClock clock = NanoClock.system();
 
         telemetry.addLine("Ready!");
+
         telemetry.update();
         telemetry.clearAll();
 
-        telemetry.addData("targetVelocity", 1);
-        telemetry.addData("measuredVelocity", 2);
-        telemetry.addData("error", 3);
+        while (!isStarted() && !isStopRequested()) {
+            telemetry.addData("targetVelocity", 1);
+            telemetry.addData("measuredVelocity", 2);
+            telemetry.addData("error", 3);
+            telemetry.update();
+        }
+
+
         waitForStart();
 
         if (isStopRequested()) return;
@@ -97,6 +105,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
         MotionProfile activeProfile = generateProfile(true);
         double profileStart = clock.seconds();
 
+        boolean reset = false;
 
         while (!isStopRequested()) {
             telemetry.addData("mode", mode);
@@ -120,7 +129,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
                     MotionState motionState = activeProfile.get(profileTime);
                     double targetPower = Kinematics.calculateMotorFeedforward(motionState.getV(), motionState.getA(), kV, kA, kStatic);
 
-                    final double NOMINAL_VOLTAGE = 12.0;
+                    final double NOMINAL_VOLTAGE = 13.0;
                     final double voltage = voltageSensor.getVoltage();
                     drive.setDrivePower(new Pose2d(NOMINAL_VOLTAGE / voltage * targetPower, 0, 0));
                     drive.updatePoseEstimate();
@@ -132,6 +141,8 @@ public class ManualFeedforwardTuner extends LinearOpMode {
                     telemetry.addData("targetVelocity", motionState.getV());
                     telemetry.addData("measuredVelocity", currentVelo);
                     telemetry.addData("error", motionState.getV() - currentVelo);
+                    drive.updatePoseEstimate();
+                    reset = false;
                     break;
                 case DRIVER_MODE:
                     if (gamepad1.b) {
@@ -141,13 +152,21 @@ public class ManualFeedforwardTuner extends LinearOpMode {
                         profileStart = clock.seconds();
                     }
 
-                    drive.setWeightedDrivePower(
-                            new Pose2d(
-                                    -gamepad1.left_stick_y,
-                                    -gamepad1.left_stick_x,
-                                    -gamepad1.right_stick_x
-                            )
-                    );
+//                    drive.setWeightedDrivePower(
+//                            new Pose2d(
+//                                    -gamepad1.left_stick_y,
+//                                    -gamepad1.left_stick_x,
+//                                    -gamepad1.right_stick_x
+//                            )
+//                    );
+                    if (!reset) {
+                        Trajectory traj = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                .lineToLinearHeading(startPose)
+                                .build();
+
+                        drive.followTrajectory(traj);
+                        reset = true;
+                    }
                     break;
             }
 

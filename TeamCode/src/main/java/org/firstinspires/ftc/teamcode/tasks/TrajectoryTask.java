@@ -16,7 +16,9 @@ public class TrajectoryTask extends Task {
 
     @Override
     public void tick() {
-        if (!Thread.currentThread().isInterrupted() && context.drive.isBusy()) {}
+        if (Thread.currentThread().isInterrupted() && context.drive.isBusy()) {
+            context.drive.update();
+        }
         else state = State.FINISHED;
     }
 

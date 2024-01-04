@@ -70,14 +70,16 @@ public abstract class AutoBase extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         instance = this;
         pivot = new Pivot(this.hardwareMap);
-        claw = new Claw(this.hardwareMap);
         lift = new Lift(this.hardwareMap);
+        claw = new Claw(this.hardwareMap);
         intake = new Intake(this.hardwareMap);
         pivotIntake = new PivotIntake(this.hardwareMap);
         drive = new SampleMecanumDrive(this.hardwareMap);
 
+        pivotIntake.setInit();
+
         onInit();
-        enableVision();
+//        enableVision();
         while (!isStarted() && !isStopRequested()) {
             drive.update();
             onInitTick();
@@ -88,7 +90,6 @@ public abstract class AutoBase extends LinearOpMode {
         while (opModeIsActive() && !isStopRequested()) {
             if (task != null) task.tick();
             onStartTick();
-            drive.update();
             lift.tick();
             telemetry.update();
         }

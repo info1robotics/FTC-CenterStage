@@ -5,19 +5,18 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.opmodes.AutoBase;
 
-@Autonomous
 @Config
-public class TestClaw extends AutoBase {
-    public static boolean open = false;
-
+@Autonomous
+public class TestClawPositions extends AutoBase {
     public static double clawLeft = 0;
     public static double clawRight = 0;
 
     @Override
     public void onStartTick() {
-        telemetry.addData("test", claw.clawLeft.getPosition());
-        telemetry.addData("tes1", claw.clawRight.getPosition());
+        telemetry.addData("clawLeft", claw.clawLeft.getPosition());
+        telemetry.addData("clawRight", claw.clawRight.getPosition());
         claw.clawLeft.setPosition(clawLeft);
         claw.clawRight.setPosition(clawRight);
     }
 }
+

@@ -31,14 +31,8 @@ public class TwoWheelLocaliser extends TwoTrackingWheelLocalizer {
     public static double TICKS_PER_REV = 8192;
     public static double WHEEL_RADIUS = 0.688975; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
-
-    public static double PARALLEL_LATERAL = -7.28; // in; distance between the left and right wheels
-    public static double PARALLEL_FORWARD = -2.62; // in; distance between the left and right wheels
-    public static double PERPENDICULAR_LATERAL = 0; // in; offset of the lateral wheel
-    public static double PERPENDICULAR_FORWARD = 4.17; // in; offset of the lateral wheel
-
-    public static double X_MULTIPLIER = 1.009039668191;
-    public static double Y_MULTIPLIER = 1.0;
+    public static double X_MULTIPLIER = 1.006711409396 * 1.002227171492 * 0.9959057209;
+    public static double Y_MULTIPLIER = 1.007432613952;
     private final SampleMecanumDrive drive;
 
     private Encoder parallelEncoder, perpEncoder;
@@ -47,17 +41,20 @@ public class TwoWheelLocaliser extends TwoTrackingWheelLocalizer {
 
     public TwoWheelLocaliser(HardwareMap hardwareMap, SampleMecanumDrive drive) {
         super(Arrays.asList(
-                new Pose2d(PARALLEL_FORWARD, PARALLEL_LATERAL, 0), // left
-                new Pose2d(PERPENDICULAR_FORWARD, PERPENDICULAR_LATERAL, Math.toRadians(90)) // front
+                new Pose2d(-2.78, -6.88, 0), // right
+                new Pose2d(5.37, 0, Math.toRadians(90)) // front
         ));
 
         this.drive = drive;
 
 //        leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "intake")); // parallel
-        parallelEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "BR")); // parallel
-        perpEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "FR")); // perpendicular
+        parallelEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "FR")); // parallel
+        perpEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "cane")); // perpendicular
 
-        perpEncoder.setDirection(Encoder.Direction.REVERSE);
+
+
+
+//        perpEncoder.setDirection(Encoder.Direction.REVERSE);
 
     }
 

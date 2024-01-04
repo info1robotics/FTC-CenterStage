@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.roadrunner.drive.opmode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.opmodes.Util;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.TwoWheelLocaliser;
@@ -21,7 +22,10 @@ import org.firstinspires.ftc.teamcode.roadrunner.drive.TwoWheelLocaliser;
 public class LocalizationTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+//        double ileft = ((TwoWheelLocaliser) drive.getLocalizer()).getWheelPositions().get(0);
+//        double iright = ((TwoWheelLocaliser) drive.getLocalizer()).getWheelPositions().get(1);
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -42,7 +46,12 @@ public class LocalizationTest extends LinearOpMode {
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", poseEstimate.getHeading());
-            telemetry.addData("a", ((TwoWheelLocaliser) drive.getLocalizer()).getWheelPositions());
+//            double left = ((StandardTrackingWheelLocalizer) drive.getLocalizer()).getWheelPositions().get(0);
+//            double right = ((StandardTrackingWheelLocalizer) drive.getLocalizer()).getWheelPositions().get(1);
+//            double front = ((StandardTrackingWheelLocalizer) drive.getLocalizer()).getWheelPositions().get(2);
+//            telemetry.addData("left", (left - ileft) + "");
+//            telemetry.addData("right ", (right - iright) + "");
+//            telemetry.addData("front", (front - ifront) + "");
             telemetry.update();
         }
     }

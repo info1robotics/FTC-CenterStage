@@ -20,8 +20,8 @@ public abstract class Task {
     public State state = State.DEFAULT;
     public AutoBase context;
 
-    public void run() {};
-    public void tick() {};
+    public void run() {}
+    public void tick() {}
 
     public void start(AutoBase context) {
         this.context = context;

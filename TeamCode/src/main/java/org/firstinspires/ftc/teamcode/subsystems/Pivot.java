@@ -5,9 +5,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 @Config
 public class Pivot {
-    public static double PIVOT_DROP = 0.71;
+    public static double PIVOT_DROP = 0.69;
     public static double PIVOT_TRANSITION = 0.07;
-    public static double PIVOT_CLOSE_COLLECT = 0.034;
     public static double PIVOT_COLLECT = 0.0;
 
     public static Pivot instance;

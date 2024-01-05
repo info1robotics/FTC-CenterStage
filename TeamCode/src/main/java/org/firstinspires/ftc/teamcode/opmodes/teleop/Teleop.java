@@ -74,7 +74,7 @@ public class Teleop extends LinearOpMode {
 
         long lastTime = System.currentTimeMillis();
         while (opModeIsActive() && !isStopRequested()) {
-            intake.setPower(gamepad2.left_stick_y);
+            intake.setPower(-gamepad2.left_stick_y);
             double deltaTime = (System.currentTimeMillis() - lastTime) / 1000d;
             if (gamepad2.dpad_up) {
                 double newPos = pivotIntake.servoRight.getPosition() + 2 * deltaTime;

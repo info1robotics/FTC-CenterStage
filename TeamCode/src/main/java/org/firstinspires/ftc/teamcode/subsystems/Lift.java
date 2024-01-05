@@ -14,7 +14,7 @@ import java.text.DecimalFormat;
 public class Lift {
     public DcMotor liftLeft, liftRight;
     public static int UPPER = 1700;
-    public static int LOWER = 0;
+    public static int LOWER = -15;
 
     public Lift(HardwareMap hardwareMap) {
         liftLeft = hardwareMap.dcMotor.get("liftLeft");

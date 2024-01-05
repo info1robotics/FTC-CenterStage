@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Claw {
     public Servo clawLeft, clawRight;
 
-    public static double RIGHT_CLOSED = 0.54;
-    public static double LEFT_CLOSED = 0.5;
+    public static double RIGHT_CLOSED = 0.58;
+    public static double LEFT_CLOSED = 0.52;
 
     public static double RIGHT_OPEN = 0;
     public static double LEFT_OPEN = 0;

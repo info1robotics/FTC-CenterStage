@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.common.AutoConstants;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Claw;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
@@ -32,6 +33,7 @@ public abstract class AutoBase extends LinearOpMode {
     public Lift lift;
     public SampleMecanumDrive drive;
     static AutoBase instance = null;
+    public static AutoConstants.TSEPosition detectedZone = AutoConstants.TSEPosition.RIGHT;
     public Pos startPos;
     public Task task;
 

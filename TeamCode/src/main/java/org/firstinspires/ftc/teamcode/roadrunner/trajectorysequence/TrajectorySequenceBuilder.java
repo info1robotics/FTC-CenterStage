@@ -149,6 +149,11 @@ public class TrajectorySequenceBuilder {
         return addPath(() -> currentTrajectoryBuilder.lineToLinearHeading(endPose, currentVelConstraint, currentAccelConstraint));
     }
 
+    public TrajectorySequenceBuilder relativeLineToLinearHeading(Pose2d endPose) {
+        Pose2d finalEndPose = new Pose2d(lastPose.getX() + endPose.getX(), lastPose.getY() + endPose.getY(),  endPose.getHeading());
+        return addPath(() -> currentTrajectoryBuilder.lineToLinearHeading(finalEndPose, currentVelConstraint, currentAccelConstraint));
+    }
+
     public TrajectorySequenceBuilder lineToLinearHeading(
             Pose2d endPose,
             TrajectoryVelocityConstraint velConstraint,

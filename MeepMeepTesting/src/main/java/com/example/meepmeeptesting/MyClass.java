@@ -35,13 +35,9 @@ public class MyClass {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 10)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(startPose)
-//                                .forward(10)
-//                                .splineTo(new Vector2d(16.5, 30), Math.toRadians(HEADING_TO_BACKDROP))
-//                                .splineToConstantHeading(new Vector2d(49.5,  21.0), Math.toRadians(HEADING_TO_BACKDROP))
-                                .setReversed(true)
-                                .splineTo(new Vector2d(13, 7), Math.toRadians(180))
-                                .splineTo(new Vector2d(0, 8), Math.toRadians(180))
-                                .splineToConstantHeading(new Vector2d(-20, 4.8), Math.toRadians(180))
+                                .splineTo(new Vector2d(22.5, 22), Math.toRadians(HEADING_TO_BACKDROP))
+                                .splineToConstantHeading(new Vector2d(48.2, 40.0), Math.toRadians(70))
+                                .resetConstraints()
                                 .build()
                 );
 

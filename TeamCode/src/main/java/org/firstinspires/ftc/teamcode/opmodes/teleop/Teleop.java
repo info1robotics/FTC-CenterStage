@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.checkerframework.checker.units.qual.C;
@@ -46,7 +47,8 @@ public class Teleop extends LinearOpMode {
         Intake intake = new Intake(hardwareMap);
         PivotIntake pivotIntake = new PivotIntake(hardwareMap);
         Cane cane = new Cane(hardwareMap);
-//        Servo plane = hardwareMap.servo.get("plane");
+        Servo plane = hardwareMap.servo.get("plane");
+        plane.setPosition(0.34);
         pivot.setCollect();
 
         claw.open();
@@ -105,13 +107,9 @@ public class Teleop extends LinearOpMode {
                 claw.close();
             }
 
-//            if (gamepad2.y) {
-//                if (System.currentTimeMillis() - planeLast > 3000) {
-//                    plane.setPosition(1);
-//                }
-//            } else {
-//                planeLast = System.currentTimeMillis();
-//            }
+            if (gamepad2.y && gamepad2.start) {
+                plane.setPosition(0);
+            }
 
 //            telemetry.addData("hook pos", hook.actuator.getCurrentPosition());
 

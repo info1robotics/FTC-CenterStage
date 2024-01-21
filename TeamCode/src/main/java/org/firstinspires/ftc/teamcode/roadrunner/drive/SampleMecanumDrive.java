@@ -160,6 +160,14 @@ public class SampleMecanumDrive extends MecanumDrive {
         );
     }
 
+//    public TrajectorySequenceBuilder trajectorySequenceBuilderMultipleStarts(Pose2d... startPoses) {
+//        return new TrajectorySequenceBuilder(
+//                Arrays.asList(startPoses),
+//                VEL_CONSTRAINT, ACCEL_CONSTRAINT,
+//                MAX_ANG_VEL, MAX_ANG_ACCEL
+//        );
+//    }
+
     public void turnAsync(double angle) {
         trajectorySequenceRunner.followTrajectorySequenceAsync(
                 trajectorySequenceBuilder(getPoseEstimate())

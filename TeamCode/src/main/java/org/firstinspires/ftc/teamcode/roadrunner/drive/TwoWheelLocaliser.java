@@ -37,8 +37,6 @@ public class TwoWheelLocaliser extends TwoTrackingWheelLocalizer {
 
     private Encoder parallelEncoder, perpEncoder;
 
-    private List<Integer> lastEncPositions, lastEncVels;
-
     public TwoWheelLocaliser(HardwareMap hardwareMap, SampleMecanumDrive drive) {
         super(Arrays.asList(
                 new Pose2d(-2.78, -6.88, 0), // right
@@ -47,15 +45,8 @@ public class TwoWheelLocaliser extends TwoTrackingWheelLocalizer {
 
         this.drive = drive;
 
-//        leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "intake")); // parallel
-        parallelEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "FR")); // parallel
-        perpEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "cane")); // perpendicular
-
-
-
-
-//        perpEncoder.setDirection(Encoder.Direction.REVERSE);
-
+        parallelEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "BL")); // parallel
+        perpEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "FL")); // perpendicular
     }
 
 

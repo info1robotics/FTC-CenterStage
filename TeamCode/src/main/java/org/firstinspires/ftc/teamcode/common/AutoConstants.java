@@ -10,6 +10,11 @@ public class AutoConstants {
         RIGHT
     }
 
+    public enum Type {
+        DETECTION,
+        FULL
+    }
+
     public static double HEADING_TO_BLUE = Math.toRadians(90);
     public static double HEADING_TO_RED = Math.toRadians(-90);
     public static double HEADING_TO_BACKDROP = Math.toRadians(0);

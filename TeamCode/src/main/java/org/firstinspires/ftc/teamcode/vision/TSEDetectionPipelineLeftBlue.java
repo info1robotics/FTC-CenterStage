@@ -97,7 +97,7 @@ public class TSEDetectionPipelineLeftBlue extends OpenCvPipeline {
                 position = AutoConstants.TSEPosition.LEFT;
             } else if (sel2 > 500) {
                 position = AutoConstants.TSEPosition.CENTER;
-            } else if (sel3 > 500) {
+            } else if (sel3 > 200) {
                 position = AutoConstants.TSEPosition.RIGHT;
             }
 

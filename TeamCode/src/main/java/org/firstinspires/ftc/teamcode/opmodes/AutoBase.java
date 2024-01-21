@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
+import android.util.Log;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -33,7 +36,7 @@ public abstract class AutoBase extends LinearOpMode {
     public Lift lift;
     public SampleMecanumDrive drive;
     static AutoBase instance = null;
-    public static AutoConstants.TSEPosition detectedZone = AutoConstants.TSEPosition.RIGHT;
+    public static AutoConstants.TSEPosition detectedZone = AutoConstants.TSEPosition.CENTER;
     public Pos startPos;
     public Task task;
 
@@ -69,6 +72,7 @@ public abstract class AutoBase extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        Log.d("fdsofmsfosj", "fdsfsfsd");
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         instance = this;
         pivot = new Pivot(this.hardwareMap);
@@ -79,9 +83,13 @@ public abstract class AutoBase extends LinearOpMode {
         drive = new SampleMecanumDrive(this.hardwareMap);
 
         pivotIntake.setInit();
+        Servo plane = hardwareMap.servo.get("plane");
+        plane.setPosition(0.34);
 
+        Log.d("fdsofmsfosj", "fdsfsfsd");
         onInit();
-//        enableVision();
+        System.out.println("dsjfsdkfjsdkfjsdk");
+        enableVision();
         while (!isStarted() && !isStopRequested()) {
             drive.update();
             onInitTick();
@@ -89,20 +97,24 @@ public abstract class AutoBase extends LinearOpMode {
         }
         onStart();
         if (task != null) task.start(this);
+
         while (opModeIsActive() && !isStopRequested()) {
             if (task != null) task.tick();
-            onStartTick();
             lift.tick();
+            onStartTick();
             telemetry.update();
         }
+
     }
 
     public void enableVision() {
+        Log.d("fdsofmsfosj", "fdsfsfsd");
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         telemetry.addData("camera ", cameraMonitorViewId);
-        System.out.println(cameraMonitorViewId);
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        System.out.println("dsjfdskfjsd adsjk");
         if (startPos == Pos.BLUE_LEFT) {
+            System.out.println("djfdskfjsdfksdjfk blue left");
             pipeline = new TSEDetectionPipelineLeftBlue();
         } else if (startPos == Pos.RED_RIGHT) {
             pipeline = new TSEDetectionPipelineRightRed();

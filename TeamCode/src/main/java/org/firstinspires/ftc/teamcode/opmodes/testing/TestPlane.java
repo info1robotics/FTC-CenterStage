@@ -5,21 +5,16 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.opmodes.AutoBase;
-
 @Config
 @Autonomous
-public class AutoFindServo extends LinearOpMode {
-    public static double servo0 = 0.0;
-    public static String name = "chub0";
-    Servo s0;
-
+public class TestPlane extends LinearOpMode {
+    public static double position = 0.0;
     @Override
     public void runOpMode() throws InterruptedException {
-        s0 = hardwareMap.servo.get(name);
+        Servo plane = hardwareMap.servo.get("plane");
         waitForStart();
         while (opModeIsActive() && !isStopRequested()) {
-            s0.setPosition(servo0);
+            plane.setPosition(position);
         }
     }
 }

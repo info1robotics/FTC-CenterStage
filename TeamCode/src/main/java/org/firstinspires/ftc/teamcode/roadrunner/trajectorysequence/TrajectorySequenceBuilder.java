@@ -21,6 +21,7 @@ import com.acmerobotics.roadrunner.util.Angle;
 
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.sequencesegment.SequenceSegment;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.sequencesegment.TrajectorySegment;
+import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.sequencesegment.TrajectorySequenceSegment;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.sequencesegment.TurnSegment;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.sequencesegment.WaitSegment;
 
@@ -148,6 +149,8 @@ public class TrajectorySequenceBuilder {
     public TrajectorySequenceBuilder lineToLinearHeading(Pose2d endPose) {
         return addPath(() -> currentTrajectoryBuilder.lineToLinearHeading(endPose, currentVelConstraint, currentAccelConstraint));
     }
+
+
 
     public TrajectorySequenceBuilder relativeLineToLinearHeading(Pose2d endPose) {
         Pose2d finalEndPose = new Pose2d(lastPose.getX() + endPose.getX(), lastPose.getY() + endPose.getY(),  endPose.getHeading());
@@ -474,6 +477,13 @@ public class TrajectorySequenceBuilder {
         pushPath();
 
         sequenceSegments.add(new TrajectorySegment(trajectory));
+        return this;
+    }
+
+    public TrajectorySequenceBuilder addTrajectorySequence(TrajectorySequence trajectorySequence) {
+        pushPath();
+
+        sequenceSegments.add(new TrajectorySequenceSegment(trajectorySequence));
         return this;
     }
 

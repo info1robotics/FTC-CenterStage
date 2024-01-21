@@ -39,8 +39,18 @@ public class Lift {
         liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
+    public void resetEncoders() {
+        liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
     public void tick() {
         int currentPosition = liftLeft.getCurrentPosition();
+        if (currentPosition < -20) {
+            resetEncoders();
+        }
         if (currentPosition < 12) {
             Pivot.instance.setCollect();
         } else if (currentPosition > 15 && currentPosition < 120) {

@@ -2,11 +2,13 @@ package org.firstinspires.ftc.teamcode.opmodes.testing;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.opmodes.AutoBase;
 
 @Config
+@Disabled
 @Autonomous
 public class CalibratePivot extends AutoBase {
 //    public static double left = 0.0;

@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
-import android.util.Log;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -27,6 +25,9 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 public abstract class AutoBase extends LinearOpMode {
+    public static State state = State.DEFAULT;
+    static AutoBase instance = null;
+    private static AutoConstants.TSEPosition detectedZone = AutoConstants.TSEPosition.RIGHT;
     public OpenCvCamera camera;
     public OpenCvPipeline pipeline;
     public Pivot pivot;
@@ -35,16 +36,20 @@ public abstract class AutoBase extends LinearOpMode {
     public Intake intake;
     public Lift lift;
     public SampleMecanumDrive drive;
-    static AutoBase instance = null;
-    public static AutoConstants.TSEPosition detectedZone = AutoConstants.TSEPosition.CENTER;
     public Pos startPos;
     public Task task;
 
-    public enum Pos {
-        BLUE_LEFT,
-        BLUE_RIGHT,
-        RED_RIGHT,
-        RED_LEFT
+    public boolean full = true;
+
+    public static AutoConstants.TSEPosition getDetectedZone() {
+        return detectedZone;
+    }
+
+    public static void setDetectedZone(AutoConstants.TSEPosition zone) {
+        if (state == State.START) {
+            return;
+        }
+        detectedZone = zone;
     }
 
     public static AutoBase getInstance() {
@@ -62,17 +67,22 @@ public abstract class AutoBase extends LinearOpMode {
 
         return result;
     }
+
+    public void onInit() {
+    }
+
+    public void onInitTick() {
+    }
 //    public MecanumDrive drive;
 
+    public void onStart() throws InterruptedException {
+    }
 
-    public void onInit() {}
-    public void onInitTick() {}
-    public void onStart() throws InterruptedException {}
-    public void onStartTick() {}
+    public void onStartTick() {
+    }
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Log.d("fdsofmsfosj", "fdsfsfsd");
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         instance = this;
         pivot = new Pivot(this.hardwareMap);
@@ -86,16 +96,30 @@ public abstract class AutoBase extends LinearOpMode {
         Servo plane = hardwareMap.servo.get("plane");
         plane.setPosition(0.34);
 
-        Log.d("fdsofmsfosj", "fdsfsfsd");
         onInit();
-        System.out.println("dsjfsdkfjsdkfjsdk");
+        state = State.INIT;
         enableVision();
         while (!isStarted() && !isStopRequested()) {
+            telemetry.addLine("A/X for Full");
+            telemetry.addLine("B/O for Detection");
+            if (gamepad1.a) {
+                full = true;
+            }
+            if (gamepad1.b) {
+                full = false;
+            }
+            if (full) {
+                telemetry.addLine("Running Full");
+            } else {
+                telemetry.addLine("Detection Only");
+            }
             drive.update();
             onInitTick();
             telemetry.update();
         }
         onStart();
+        pivotIntake.setPosLeft(0.55);
+        state = State.START;
         if (task != null) task.start(this);
 
         while (opModeIsActive() && !isStopRequested()) {
@@ -108,13 +132,10 @@ public abstract class AutoBase extends LinearOpMode {
     }
 
     public void enableVision() {
-        Log.d("fdsofmsfosj", "fdsfsfsd");
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         telemetry.addData("camera ", cameraMonitorViewId);
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        System.out.println("dsjfdskfjsd adsjk");
         if (startPos == Pos.BLUE_LEFT) {
-            System.out.println("djfdskfjsdfksdjfk blue left");
             pipeline = new TSEDetectionPipelineLeftBlue();
         } else if (startPos == Pos.RED_RIGHT) {
             pipeline = new TSEDetectionPipelineRightRed();
@@ -144,5 +165,18 @@ public abstract class AutoBase extends LinearOpMode {
 
         }
 
+    }
+
+    public enum Pos {
+        BLUE_LEFT,
+        BLUE_RIGHT,
+        RED_RIGHT,
+        RED_LEFT
+    }
+
+    public enum State {
+        DEFAULT,
+        INIT,
+        START
     }
 }

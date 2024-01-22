@@ -7,9 +7,9 @@ import org.firstinspires.ftc.teamcode.opmodes.AutoBase;
 
 
 @Config
-@Autonomous
+@Autonomous(group = "Debug")
 public class PivotIntakePositions extends AutoBase {
-    public static double position = 0.06;
+    public static double position = 0.00;
 
     @Override
     public void onStartTick() {

@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
-@Autonomous
+@Autonomous(group = "Debug")
 public class TestPlane extends LinearOpMode {
     public static double position = 0.0;
     @Override

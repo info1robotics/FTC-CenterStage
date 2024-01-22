@@ -175,9 +175,9 @@ public class AutoRightBlue extends AutoBase {
                 .build();
 
         task = serial(
-                conditional(() -> detectedZone == AutoConstants.TSEPosition.LEFT, trajectorySequence(detectionLeft)),
-                conditional(() -> detectedZone == AutoConstants.TSEPosition.CENTER, trajectorySequence(detectionMid)),
-                conditional(() -> detectedZone == AutoConstants.TSEPosition.RIGHT, trajectorySequence(detectionRight)),
+                conditional(() -> getDetectedZone() == AutoConstants.TSEPosition.LEFT, trajectorySequence(detectionLeft)),
+                conditional(() -> getDetectedZone() == AutoConstants.TSEPosition.CENTER, trajectorySequence(detectionMid)),
+                conditional(() -> getDetectedZone() == AutoConstants.TSEPosition.RIGHT, trajectorySequence(detectionRight)),
                 parallel(
                         serial(
                                 execute(() -> claw.open()),
@@ -185,9 +185,9 @@ public class AutoRightBlue extends AutoBase {
                                 execute(() -> lift.setTargetPosition(-15, 1))
                         ),
                         conditional(() -> type == FULL, serial(
-                                conditional(() -> detectedZone == AutoConstants.TSEPosition.LEFT, trajectorySequence(stackTrajectories.get(0))),
-                                conditional(() -> detectedZone == AutoConstants.TSEPosition.CENTER, trajectorySequence(stackTrajectories.get(1))),
-                                conditional(() -> detectedZone == AutoConstants.TSEPosition.RIGHT, trajectorySequence(stackTrajectories.get(2))),
+                                conditional(() -> getDetectedZone() == AutoConstants.TSEPosition.LEFT, trajectorySequence(stackTrajectories.get(0))),
+                                conditional(() -> getDetectedZone() == AutoConstants.TSEPosition.CENTER, trajectorySequence(stackTrajectories.get(1))),
+                                conditional(() -> getDetectedZone() == AutoConstants.TSEPosition.RIGHT, trajectorySequence(stackTrajectories.get(2))),
                                 sleepms(150),
                                 execute(() -> pivotIntake.setPosLeft(0.07)),
                                 sleepms(1000),

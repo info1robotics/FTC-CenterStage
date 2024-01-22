@@ -15,7 +15,7 @@ public class TaskBuilder {
     public static ParallelTask parallel(Task... task) {
         return new ParallelTask(task);
     }
-    public static ConditionalTask conditional(Supplier<Boolean> condition, Task... task) {
+    public static ConditionalTask conditional(Supplier<Boolean> condition, Task task) {
         return new ConditionalTask(condition, task);
     }
 

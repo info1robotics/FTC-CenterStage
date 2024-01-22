@@ -25,13 +25,13 @@ public class TSEDetectionPipelineRightRed extends OpenCvPipeline {
     /*
      * The core values which define the location and size of the sample regions
      */
-    static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(1, 188);
-    static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(251 - 80, 153 + 25);
-    static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(498 - 80, 188);
+    static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(1, 188 - 150);
+    static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(251 - 80, 153 + 25 - 150);
+    static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(498 - 80, 188 - 150);
     static final int REGION_WIDTH = 125;
-    static final int REGION_HEIGHT = 75 + 40;
+    static final int REGION_HEIGHT = 75 + 40 + 150;
     static final int REGION2_WIDTH = 225;
-    static final int REGION2_HEIGHT = 60 + 40;
+    static final int REGION2_HEIGHT = 60 + 40 + 150;
 
 
     // Volatile since accessed by OpMode thread w/o synchronization
@@ -92,7 +92,7 @@ public class TSEDetectionPipelineRightRed extends OpenCvPipeline {
             AutoBase.getInstance().telemetry.addData("Pixels Mid", sel2);
             AutoBase.getInstance().telemetry.addData("Pixels Right", sel3);
 
-            if (sel1 > 700) {
+            if (sel1 > 200) {
                 position = AutoConstants.TSEPosition.LEFT;
             } else if (sel2 > 500) {
                 position = AutoConstants.TSEPosition.CENTER;
@@ -100,7 +100,8 @@ public class TSEDetectionPipelineRightRed extends OpenCvPipeline {
                 position = AutoConstants.TSEPosition.RIGHT;
             }
 
-            AutoBase.detectedZone = position;
+            AutoBase.setDetectedZone(position);
+
 
             Imgproc.rectangle(input, region1_pointA, region1_pointB, BLUE, 2);
             Imgproc.rectangle(input, region2_pointA, region2_pointB, BLUE, 2);

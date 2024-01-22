@@ -3,8 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.testing;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.opmodes.AutoBase;
-
-@Autonomous
+@Autonomous(group = "Debug")
 public class LiftTickMonitor extends AutoBase {
     @Override
     public void onStartTick() {

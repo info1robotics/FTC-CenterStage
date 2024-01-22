@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.opmodes.AutoBase;
 
 @Config
-@Autonomous
+@Autonomous(group = "Debug")
 public class AutoFindServo extends LinearOpMode {
     public static double servo0 = 0.0;
     public static String name = "chub0";

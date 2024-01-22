@@ -1,11 +1,11 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto;
 
 import static org.firstinspires.ftc.teamcode.common.AutoConstants.HEADING_TO_BACKDROP;
-import static org.firstinspires.ftc.teamcode.common.AutoConstants.HEADING_TO_BLUE;
+import static org.firstinspires.ftc.teamcode.common.AutoConstants.HEADING_TO_RED;
 import static org.firstinspires.ftc.teamcode.common.AutoConstants.TILE_SIZE;
-import static org.firstinspires.ftc.teamcode.common.AutoConstants.Type.DETECTION;
-import static org.firstinspires.ftc.teamcode.common.AutoConstants.Type.FULL;
+import static org.firstinspires.ftc.teamcode.tasks.TaskBuilder.conditional;
 import static org.firstinspires.ftc.teamcode.tasks.TaskBuilder.execute;
+import static org.firstinspires.ftc.teamcode.tasks.TaskBuilder.parallel;
 import static org.firstinspires.ftc.teamcode.tasks.TaskBuilder.serial;
 import static org.firstinspires.ftc.teamcode.tasks.TaskBuilder.sleepms;
 import static org.firstinspires.ftc.teamcode.tasks.TaskBuilder.trajectorySequence;
@@ -34,74 +34,46 @@ public class AutoRightRed extends AutoBase {
             new AngularVelocityConstraint(3)
     ));
 
-    AutoConstants.Type type = DETECTION;
-
-
-    @Override
-    public void onInitTick() {
-        super.onInitTick();
-        if (gamepad1.a) {
-            type = DETECTION;
-        } else if (gamepad1.b) {
-            type = FULL;
-        }
-
-        telemetry.addLine("Right claw closes with yellow pixel.");
-        telemetry.addLine("Press A / X for detection only.");
-        telemetry.addLine("Press B / O for full auto.");
-        if (type == DETECTION) {
-            telemetry.addLine("Currently set to run: Detection Only.");
-        } else if (type == FULL) {
-            telemetry.addLine("Currently set to run: Full Auto.");
-        }
-    }
 
     @Override
     public void onInit() {
-        startPos = Pos.RED_RIGHT;
         super.onInit();
         claw.close();
-        pivot.setCollect();
+        startPos = Pos.RED_RIGHT;
         drive.setPoseEstimate(startPose);
 
         TrajectorySequence detectionLeft = drive.trajectorySequenceBuilder(startPose)
-                .splineTo(new Vector2d(15.5, -25), Math.toRadians(HEADING_TO_BACKDROP))
+                .splineTo(new Vector2d(15.0, -27), Math.toRadians(HEADING_TO_BACKDROP))
                 .relativeTemporalMarker(-0.33, () -> {
-                    intake.setPower(0.8);
+                    intake.setPower(1);
                 })
                 .relativeTemporalMarker(0.5, () -> {
                     intake.setPower(0);
                 })
-                .splineToConstantHeading(new Vector2d(50.8, -21.0), Math.toRadians(HEADING_TO_BACKDROP))
+                .splineToConstantHeading(new Vector2d(52, -21.0), Math.toRadians(HEADING_TO_BACKDROP))
                 .relativeTemporalMarker(-1.2, () -> {
-                    lift.setTargetPosition(300, 1);
-                })
-                .relativeTemporalMarker(-0.8, () -> {
-                    pivot.setDrop();
+                    lift.setTargetPosition(210, 1);
                 })
                 .build();
 
         TrajectorySequence detectionMid = drive.trajectorySequenceBuilder(startPose)
-                .splineTo(new Vector2d(23.5, -19.3), Math.toRadians(HEADING_TO_BACKDROP))
-                .relativeTemporalMarker(-0.43, () -> {
-                    intake.setPower(0.5);
+                .addSpatialMarker(new Vector2d(27.5, -19.3), () -> {
+                    intake.setPower(1);
                 })
+                .splineTo(new Vector2d(32.5, -19.3), Math.toRadians(HEADING_TO_BACKDROP))
                 .relativeTemporalMarker(0.5, () -> {
                     intake.setPower(0);
                 })
-                .splineToConstantHeading(new Vector2d(50.8, -28.5), Math.toRadians(HEADING_TO_BACKDROP))
+                .splineToConstantHeading(new Vector2d(50, -28.5), Math.toRadians(HEADING_TO_BACKDROP))
                 .relativeTemporalMarker(-1.2, () -> {
-                    lift.setTargetPosition(300, 1);
-                })
-                .relativeTemporalMarker(-0.8, () -> {
-                    pivot.setDrop();
+                    lift.setTargetPosition(270, 1);
                 })
                 .build();
 
         TrajectorySequence detectionRight = drive.trajectorySequenceBuilder(startPose)
                 .setVelConstraint(slowConstraint)
-                .splineTo(new Vector2d(37.5, -30), Math.toRadians(HEADING_TO_BACKDROP))
-                .relativeTemporalMarker(-0.52, () -> {
+                .splineTo(new Vector2d(37.5, -28.5), Math.toRadians(HEADING_TO_BACKDROP))
+                .relativeTemporalMarker(-0.57, () -> {
                     intake.setPower(0.8);
                 })
                 .relativeTemporalMarker(0.3, () -> {
@@ -110,12 +82,10 @@ public class AutoRightRed extends AutoBase {
                 .resetConstraints()
                 .splineToConstantHeading(new Vector2d(50, -35.8), Math.toRadians(HEADING_TO_BACKDROP))
                 .relativeTemporalMarker(-1.2, () -> {
-                    lift.setTargetPosition(300, 1);
-                })
-                .relativeTemporalMarker(-0.8, () -> {
-                    pivot.setDrop();
+                    lift.setTargetPosition(270, 1);
                 })
                 .build();
+
 
         Pose2d[] detectionEnds = {
                 detectionLeft.end(),
@@ -126,29 +96,39 @@ public class AutoRightRed extends AutoBase {
         ArrayList<TrajectorySequence> stackTrajectories = new ArrayList<>();
 
         for (int i = 0; i < 3; i++) {
+            final int finalI = i;
             stackTrajectories.add(drive.trajectorySequenceBuilder(detectionEnds[0])
-                    .setReversed(true)
-                    .splineTo(new Vector2d(13, -7), Math.toRadians(180))
-                    .splineTo(new Vector2d(0, -8), Math.toRadians(180))
-                    .splineToConstantHeading(new Vector2d(-20, -4.8), Math.toRadians(180))
                     .relativeTemporalMarker(0, () -> {
-                        pivotIntake.setPosLeft(0.1);
+                        if (finalI == 0) {
+                            drive.setPoseEstimate(new Pose2d(
+                                    detectionEnds[0].getX() - 1,
+                                    detectionEnds[0].getY() - 1.3,
+                                    detectionEnds[0].getHeading())
+                            );
+                        } else if (finalI == 2) {
+                            drive.setPoseEstimate(new Pose2d(
+                                    detectionEnds[0].getX(),
+                                    detectionEnds[0].getY() - 16,
+                                    detectionEnds[0].getHeading())
+                            );
+                        }
+                    })
+                    .setReversed(true)
+                    .splineTo(new Vector2d(17, -5), Math.toRadians(180))
+                    .splineToConstantHeading(new Vector2d(0, -8), Math.toRadians(180))
+                    .splineToConstantHeading(new Vector2d(-20, -4.4), Math.toRadians(180))
+                    .relativeTemporalMarker(0, () -> {
+                        pivotIntake.setPosLeft(0.34);
                     })
                     .setVelConstraint(slowConstraint)
-                    .splineToSplineHeading(new Pose2d(-56, -4.8, Math.toRadians(25) + HEADING_TO_BACKDROP), Math.toRadians(-180))
-                    .relativeTemporalMarker(0, () -> {
-                        new Thread(() -> {
-                            try {
-                                Thread.sleep(1400);
-                                intake.setPower(-1);
-                            } catch (Exception ignored) {
-
-                            }
-                        }).start();
+                    .splineToSplineHeading(new Pose2d(-52.1, -4.4, HEADING_TO_BACKDROP), Math.toRadians(-180))
+                    .relativeTemporalMarker(-0.7, () -> {
+                        intake.setPower(-1);
                     })
-                    .lineToSplineHeading(new Pose2d(-56.7, -4, Math.toRadians(0) + HEADING_TO_BACKDROP))
-                    .lineToSplineHeading(new Pose2d(-57.2, 0, Math.toRadians(0) + HEADING_TO_BACKDROP))
-//                    .back(1.2)
+                    .relativeTemporalMarker(0, () -> {
+                        pivotIntake.setPosLeft(0.27);
+                    })
+                    .forward(3)
                     .build());
         }
 
@@ -158,10 +138,9 @@ public class AutoRightRed extends AutoBase {
                 })
                 .addTemporalMarker(2, () -> {
                     intake.setPower(0);
-                    pivotIntake.setInit();
                 })
                 .lineToSplineHeading(new Pose2d(30, -9, HEADING_TO_BACKDROP))
-                .relativeTemporalMarker(-0.5, () -> {
+                .relativeTemporalMarker(-0.2, () -> {
                     lift.setTargetPosition(500, 1);
                 })
                 .splineToConstantHeading(new Vector2d(52, -30), Math.toRadians(HEADING_TO_BACKDROP))
@@ -172,16 +151,18 @@ public class AutoRightRed extends AutoBase {
                     lift.setTargetPosition(-15, 1);
                 })
                 .setReversed(true)
-                .splineTo(new Vector2d(13, -7), Math.toRadians(180))
-                .splineTo(new Vector2d(0, -8), Math.toRadians(180))
+                .splineTo(new Vector2d(13, -5), Math.toRadians(180))
+                .splineTo(new Vector2d(0, -3), Math.toRadians(180))
                 .splineToConstantHeading(new Vector2d(-20, 0), Math.toRadians(180))
-                .setVelConstraint(slowConstraint)
-                .splineToSplineHeading(new Pose2d(-55, -4, HEADING_TO_BACKDROP), Math.toRadians(-180))
-                .relativeTemporalMarker(0, () -> {
-                    pivotIntake.setPosLeft(0.04);
+                .relativeTemporalMarker(-0.5, () -> {
                     intake.setPower(-1);
                 })
-                .lineToLinearHeading(new Pose2d(-56.2, -0, Math.toRadians(-13) + HEADING_TO_BACKDROP))
+                .setVelConstraint(slowConstraint)
+                .splineToSplineHeading(new Pose2d(-52, -3.6, HEADING_TO_BACKDROP), Math.toRadians(-180))
+                .relativeTemporalMarker(0, () -> {
+                    pivotIntake.setPosLeft(0.12);
+                })
+                .lineToLinearHeading(new Pose2d(-53.2, -2.3, HEADING_TO_BACKDROP))
                 .build();
 
         TrajectorySequence toBackdrop2 = drive.trajectorySequenceBuilder(toStack2.end())
@@ -195,30 +176,54 @@ public class AutoRightRed extends AutoBase {
                 .relativeTemporalMarker(0, () -> {
                     lift.setTargetPosition(500, 1);
                 })
-                .splineToConstantHeading(new Vector2d(51.6, -30), Math.toRadians(HEADING_TO_BACKDROP))
+                .splineToConstantHeading(new Vector2d(52.3, -30), Math.toRadians(HEADING_TO_BACKDROP))
                 .build();
 
         TrajectorySequence park = drive.trajectorySequenceBuilder(toBackdrop2.end())
                 .relativeTemporalMarker(0.2, () -> {
                     claw.open();
-                    lift.setTargetPosition(300, 1);
+                    lift.setTargetPosition(590, 1);
                 })
-                .relativeLineToLinearHeading(new Pose2d(-7, -20, HEADING_TO_BLUE))
+                .relativeLineToLinearHeading(new Pose2d(-7, 12, HEADING_TO_RED))
                 .build();
 
+
         task = serial(
-                execute(() -> {
-                    if (detectedZone == AutoConstants.TSEPosition.LEFT) {
-                        drive.followTrajectorySequence(detectionLeft);
-                    } else if (detectedZone == AutoConstants.TSEPosition.RIGHT) {
-                        drive.followTrajectorySequence(detectionRight);
-                    } else {
-                        drive.followTrajectorySequence(detectionMid);
-                    }
-                }),
-                execute(() -> claw.open()),
-                sleepms(540),
-                execute(() -> lift.setTargetPosition(-15, 1)),
+                conditional(() -> getDetectedZone() == AutoConstants.TSEPosition.LEFT, trajectorySequence(detectionLeft)),
+                conditional(() -> getDetectedZone() == AutoConstants.TSEPosition.CENTER, trajectorySequence(detectionMid)),
+                conditional(() -> getDetectedZone() == AutoConstants.TSEPosition.RIGHT, trajectorySequence(detectionRight)),
+                parallel(
+                        serial(
+                                execute(() -> claw.open()),
+                                sleepms(540),
+                                execute(() -> lift.setTargetPosition(-15, 1))
+                        ),
+                        conditional(() -> full, serial(
+                                conditional(() -> getDetectedZone() == AutoConstants.TSEPosition.LEFT, trajectorySequence(stackTrajectories.get(0))),
+                                conditional(() -> getDetectedZone() == AutoConstants.TSEPosition.CENTER, trajectorySequence(stackTrajectories.get(1))),
+                                conditional(() -> getDetectedZone() == AutoConstants.TSEPosition.RIGHT, trajectorySequence(stackTrajectories.get(2))),
+                                sleepms(150),
+//                                execute(() -> pivotIntake.setPosLeft(0.24)),
+//                                sleepms(1000),
+                                execute(() -> {
+                                    intake.setPower(0);
+                                    claw.close();
+                                }),
+                                trajectorySequence(toBackdrop),
+                                sleepms(200),
+                                execute(() -> {
+                                    claw.open();
+                                    lift.setTargetPosition(550, 1);
+                                }),
+                                trajectorySequence(toStack2),
+                                sleepms(1000),
+                                execute(() -> {
+                                    intake.setPower(0);
+                                    claw.close();
+                                }),
+                                trajectorySequence(toBackdrop2)
+                        ))
+                ),
                 trajectorySequence(park),
                 execute(() -> {
                     lift.setTargetPosition(-20, 1);

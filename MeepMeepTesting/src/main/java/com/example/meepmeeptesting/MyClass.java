@@ -60,12 +60,8 @@ public class MyClass {
 //                                .build()
 
                         drive.trajectorySequenceBuilder(startPose) // left detection
-                                .splineToSplineHeading(new Pose2d(-TILE_SIZE - 4, 30, HEADING_TO_STACK), Math.toRadians(HEADING_TO_RED))
-                                .waitSeconds(0.1)
-                                .splineToConstantHeading(new Vector2d(-TILE_SIZE - 12, 8), HEADING_TO_BACKDROP)
-                                .lineToSplineHeading(new Pose2d(15, 8, HEADING_TO_BACKDROP))
-                                .splineToConstantHeading(new Vector2d(50, 38), Math.toRadians(HEADING_TO_BACKDROP))
-                                .resetConstraints()
+                                .splineToConstantHeading(new Vector2d(0, -8), Math.toRadians(180))
+                                .splineToConstantHeading(new Vector2d(-20, -3.4), Math.toRadians(180))
                                 .build()
 
 //                        drive.trajectorySequenceBuilder(new Pose2d(0, 0, 0)) // mid detection

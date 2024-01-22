@@ -101,7 +101,7 @@ public class TSEDetectionPipelineLeftRed extends OpenCvPipeline {
                 position = AutoConstants.TSEPosition.RIGHT;
             }
 
-            AutoBase.detectedZone = position;
+            AutoBase.setDetectedZone(position);
 
             Imgproc.rectangle(input, region1_pointA, region1_pointB, BLUE, 2);
             Imgproc.rectangle(input, region2_pointA, region2_pointB, BLUE, 2);

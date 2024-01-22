@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto;
 
 import static org.firstinspires.ftc.teamcode.common.AutoConstants.HEADING_TO_BACKDROP;
+import static org.firstinspires.ftc.teamcode.common.AutoConstants.HEADING_TO_BLUE;
 import static org.firstinspires.ftc.teamcode.common.AutoConstants.HEADING_TO_RED;
 import static org.firstinspires.ftc.teamcode.common.AutoConstants.TILE_SIZE;
-import static org.firstinspires.ftc.teamcode.common.AutoConstants.Type.DETECTION;
-import static org.firstinspires.ftc.teamcode.common.AutoConstants.Type.FULL;
+import static org.firstinspires.ftc.teamcode.tasks.TaskBuilder.conditional;
 import static org.firstinspires.ftc.teamcode.tasks.TaskBuilder.execute;
 import static org.firstinspires.ftc.teamcode.tasks.TaskBuilder.serial;
 import static org.firstinspires.ftc.teamcode.tasks.TaskBuilder.sleepms;
@@ -20,6 +20,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.common.AutoConstants;
 import org.firstinspires.ftc.teamcode.opmodes.AutoBase;
+import org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 
 import java.util.Arrays;
@@ -38,38 +39,13 @@ public class AutoLeftBlue extends AutoBase {
             new AngularVelocityConstraint(2)
     ));
 
-    AutoConstants.Type type = DETECTION;
-
-
-    @Override
-    public void onInitTick() {
-        super.onInitTick();
-        if (gamepad1.a) {
-            type = DETECTION;
-        } else if (gamepad1.b) {
-            type = FULL;
-        }
-
-        telemetry.addLine("Right claw closes with yellow pixel.");
-        telemetry.addLine("Press A / X for detection only.");
-        telemetry.addLine("Press B / O for full auto.");
-        if (type == DETECTION) {
-            telemetry.addLine("Currently set to run: Detection Only.");
-        } else if (type == FULL) {
-            telemetry.addLine("Currently set to run: Full Auto.");
-        }
-        telemetry.addData("Detection Case", detectedZone);
-    }
-
     @Override
     public void onInit() {
-        startPos = Pos.BLUE_LEFT;
         super.onInit();
         claw.close();
-        pivot.setCollect();
         drive.setPoseEstimate(startPose);
 
-        TrajectorySequence detectRight = drive.trajectorySequenceBuilder(startPose)
+        TrajectorySequence toStackRight = drive.trajectorySequenceBuilder(startPose)
                 .splineTo(new Vector2d(16.5, 22), Math.toRadians(HEADING_TO_BACKDROP))
                 .relativeTemporalMarker(-0.43, () -> {
                     intake.setPower(0.8);
@@ -77,16 +53,16 @@ public class AutoLeftBlue extends AutoBase {
                 .relativeTemporalMarker(0.5, () -> {
                     intake.setPower(0);
                 })
-                .splineToConstantHeading(new Vector2d(49.2, 24), Math.toRadians(HEADING_TO_BACKDROP))
+                .splineToConstantHeading(new Vector2d(49.2,  24), Math.toRadians(HEADING_TO_BACKDROP))
                 .relativeTemporalMarker(-2, () -> {
-                    lift.setTargetPosition(300, 1);
+                    lift.setTargetPosition(210, 1);
                 })
-                .relativeTemporalMarker(-1, () -> {
-                    pivot.setDrop();
+                .relativeTemporalMarker(0.0, () -> {
+                    claw.open();
                 })
-                .build();
-
-        TrajectorySequence toStackRight = drive.trajectorySequenceBuilder(detectRight.end())
+                .relativeTemporalMarker(0.54, () -> {
+                    lift.setTargetPosition(-15, 1);
+                })
                 .setReversed(true)
                 .splineTo(new Vector2d(13, 2), Math.toRadians(180))
                 .splineTo(new Vector2d(0, 2), Math.toRadians(180))
@@ -110,7 +86,7 @@ public class AutoLeftBlue extends AutoBase {
                 .back(2)
                 .build();
 
-        TrajectorySequence detectMid = drive.trajectorySequenceBuilder(startPose)
+        TrajectorySequence toStackMid = drive.trajectorySequenceBuilder(startPose)
                 .splineTo(new Vector2d(23.5, 18.5), Math.toRadians(HEADING_TO_BACKDROP))
                 .relativeTemporalMarker(-0.36, () -> {
                     intake.setPower(0.5);
@@ -120,14 +96,14 @@ public class AutoLeftBlue extends AutoBase {
                 })
                 .splineToConstantHeading(new Vector2d(48.2, 31.5), Math.toRadians(HEADING_TO_BACKDROP))
                 .relativeTemporalMarker(-2, () -> {
-                    lift.setTargetPosition(300, 1);
+                    lift.setTargetPosition(210, 1);
                 })
-                .relativeTemporalMarker(-1, () -> {
-                    pivot.setDrop();
+                .relativeTemporalMarker(0.0, () -> {
+                    claw.open();
                 })
-                .build();
-
-        TrajectorySequence toStackMid = drive.trajectorySequenceBuilder(detectMid.end())
+                .relativeTemporalMarker(1.14, () -> {
+                    lift.setTargetPosition(-15, 1);
+                })
                 .setReversed(true)
                 .splineTo(new Vector2d(13, 2), Math.toRadians(180))
                 .splineTo(new Vector2d(0, 2), Math.toRadians(180))
@@ -151,7 +127,7 @@ public class AutoLeftBlue extends AutoBase {
                 .back(2)
                 .build();
 
-        TrajectorySequence detectLeft = drive.trajectorySequenceBuilder(startPose)
+        TrajectorySequence toStackLeft = drive.trajectorySequenceBuilder(startPose)
                 .setVelConstraint(slowConstraint)
                 .splineTo(new Vector2d(22.5, 26), Math.toRadians(HEADING_TO_BACKDROP))
                 .relativeTemporalMarker(0.1, () -> {
@@ -161,17 +137,17 @@ public class AutoLeftBlue extends AutoBase {
                     intake.setPower(0);
                 })
                 .setVelConstraint(verySlowConstraint)
-                .splineToConstantHeading(new Vector2d(50, 39.0), Math.toRadians(70))
+                .splineToConstantHeading(new Vector2d(49.3, 39.0), Math.toRadians(70))
                 .resetConstraints()
                 .relativeTemporalMarker(-2, () -> {
-                    lift.setTargetPosition(300, 1);
+                    lift.setTargetPosition(210, 1);
                 })
-                .relativeTemporalMarker(-1, () -> {
-                    pivot.setDrop();
+                .relativeTemporalMarker(0.0, () -> {
+                    claw.open();
                 })
-                .build();
-
-        TrajectorySequence toStackLeft = drive.trajectorySequenceBuilder(detectLeft.end())
+                .relativeTemporalMarker(0.54, () -> {
+                    lift.setTargetPosition(-15, 1);
+                })
                 .setReversed(true)
                 .splineTo(new Vector2d(13, 2), Math.toRadians(180))
                 .splineTo(new Vector2d(0, 2), Math.toRadians(180))
@@ -205,7 +181,7 @@ public class AutoLeftBlue extends AutoBase {
                 .lineToSplineHeading(new Pose2d(10, 9, HEADING_TO_BACKDROP))
                 .setVelConstraint(slowConstraint)
                 .relativeTemporalMarker(-0.5, () -> {
-                    lift.setTargetPosition(300, 1);
+                    lift.setTargetPosition(500, 1);
                 })
                 .splineToConstantHeading(new Vector2d(49.2, 30), Math.toRadians(HEADING_TO_BACKDROP))
                 .build();
@@ -225,6 +201,7 @@ public class AutoLeftBlue extends AutoBase {
                     intake.setPower(-1);
                 })
                 .lineToLinearHeading(new Pose2d(-54.7, 0.9, Math.toRadians(19) + HEADING_TO_BACKDROP))
+//                .back(2.7)
                 .build();
 
         TrajectorySequence toBackdrop2 = drive.trajectorySequenceBuilder(toStack2.end())
@@ -236,34 +213,40 @@ public class AutoLeftBlue extends AutoBase {
                 })
                 .lineToSplineHeading(new Pose2d(10, 2, HEADING_TO_BACKDROP))
                 .relativeTemporalMarker(-0.3, () -> {
-                    lift.setTargetPosition(300, 1);
+                    lift.setTargetPosition(500, 1);
                 })
                 .splineToConstantHeading(new Vector2d(50, 29.75), Math.toRadians(HEADING_TO_BACKDROP))
-                .build();
-
-        TrajectorySequence park = drive.trajectorySequenceBuilder(toBackdrop2.end())
                 .relativeTemporalMarker(0.2, () -> {
                     claw.open();
                     lift.setTargetPosition(590, 1);
                 })
-                .relativeLineToLinearHeading(new Pose2d(-5, 20, HEADING_TO_RED))
+                .relativeLineToLinearHeading(new Pose2d(-5, -20, HEADING_TO_RED))
                 .build();
 
         task = serial(
+                conditional(() -> getDetectedZone() == AutoConstants.TSEPosition.LEFT, trajectorySequence(toStackLeft)),
+                conditional(() -> getDetectedZone() == AutoConstants.TSEPosition.CENTER, trajectorySequence(toStackMid)),
+                conditional(() -> getDetectedZone() == AutoConstants.TSEPosition.RIGHT, trajectorySequence(toStackRight)),
+                sleepms(150),
+                execute(() -> pivotIntake.setPosLeft(0.07)),
+                sleepms(1000),
                 execute(() -> {
-                    if (detectedZone == AutoConstants.TSEPosition.LEFT) {
-                        drive.followTrajectorySequence(detectLeft);
-                    } else if (detectedZone == AutoConstants.TSEPosition.RIGHT) {
-                        drive.followTrajectorySequence(detectRight);
-                    } else {
-                        drive.followTrajectorySequence(detectMid);
-                    }
+                    intake.setPower(0);
+                    claw.close();
                 }),
-
-                execute(() -> claw.open()),
-                sleepms(540),
-                execute(() -> lift.setTargetPosition(-15, 1)),
-                trajectorySequence(park),
+                trajectorySequence(toBackdrop),
+                sleepms(200),
+                execute(() -> {
+                    claw.open();
+                    lift.setTargetPosition(550, 1);
+                }),
+                trajectorySequence(toStack2),
+                sleepms(1000),
+                execute(() -> {
+                    intake.setPower(0);
+                    claw.close();
+                }),
+                trajectorySequence(toBackdrop2),
                 execute(() -> {
                     lift.setTargetPosition(-20, 1);
                     claw.open();

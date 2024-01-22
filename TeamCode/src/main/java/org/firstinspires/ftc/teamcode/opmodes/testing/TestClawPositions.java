@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.opmodes.AutoBase;
 
 @Config
-@Autonomous
+@Autonomous(group = "Debug")
 public class TestClawPositions extends AutoBase {
     public static double clawLeft = 0;
     public static double clawRight = 0;

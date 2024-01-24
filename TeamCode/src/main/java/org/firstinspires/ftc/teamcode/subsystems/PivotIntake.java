@@ -9,9 +9,9 @@ public class PivotIntake {
     public static double PIVOT_MAX = 0.75;
 
     public static double PIVOT_AUTO = 0.7;
-    public static double PIVOT_TELEOP = 0.24;
+    public static double PIVOT_TELEOP = 0.18;
 
-    public Servo servoRight; // when looking from the intake
+    public Servo servoRight; // when looking from the intakeasd
     public PivotIntake(HardwareMap hardwareMap) {
         servoRight = hardwareMap.servo.get("pivotIntake");
         servoRight.setDirection(Servo.Direction.REVERSE);

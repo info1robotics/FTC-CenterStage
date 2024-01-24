@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.common.AutoConstants;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Claw;
+import org.firstinspires.ftc.teamcode.subsystems.DroneLauncher;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.Pivot;
@@ -32,6 +33,8 @@ public abstract class AutoBase extends LinearOpMode {
     public OpenCvPipeline pipeline;
     public Pivot pivot;
     public Claw claw;
+
+    public DroneLauncher drone;
     public PivotIntake pivotIntake;
     public Intake intake;
     public Lift lift;
@@ -91,10 +94,10 @@ public abstract class AutoBase extends LinearOpMode {
         intake = new Intake(this.hardwareMap);
         pivotIntake = new PivotIntake(this.hardwareMap);
         drive = new SampleMecanumDrive(this.hardwareMap);
+        drone=new DroneLauncher(this.hardwareMap);
 
         pivotIntake.setInit();
-        Servo plane = hardwareMap.servo.get("drone");
-        plane.setPosition(0.34);
+        drone.setDefault();
 
         onInit();
         state = State.INIT;

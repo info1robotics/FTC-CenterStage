@@ -93,7 +93,7 @@ public abstract class AutoBase extends LinearOpMode {
         drive = new SampleMecanumDrive(this.hardwareMap);
 
         pivotIntake.setInit();
-        Servo plane = hardwareMap.servo.get("plane");
+        Servo plane = hardwareMap.servo.get("drone");
         plane.setPosition(0.34);
 
         onInit();

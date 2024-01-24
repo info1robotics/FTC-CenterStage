@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.common.GamepadEx;
 import org.firstinspires.ftc.teamcode.subsystems.Cane;
 import org.firstinspires.ftc.teamcode.subsystems.Claw;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.subsystems.DroneLauncher;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.Pivot;
@@ -47,8 +48,8 @@ public class Teleop extends LinearOpMode {
         Intake intake = new Intake(hardwareMap);
         PivotIntake pivotIntake = new PivotIntake(hardwareMap);
         Cane cane = new Cane(hardwareMap);
-        Servo plane = hardwareMap.servo.get("plane");
-        plane.setPosition(0.34);
+        DroneLauncher drone=new DroneLauncher(hardwareMap);
+        drone.setDefault();
         pivot.setCollect();
 
         claw.open();
@@ -115,7 +116,7 @@ public class Teleop extends LinearOpMode {
             }
 
             if (gamepad2.y && gamepad2.start) {
-                plane.setPosition(0);
+                drone.release();
             }
 
 //            telemetry.addData("hook pos", hook.actuator.getCurrentPosition());

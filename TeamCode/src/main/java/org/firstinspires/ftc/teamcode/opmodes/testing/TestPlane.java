@@ -11,7 +11,7 @@ public class TestPlane extends LinearOpMode {
     public static double position = 0.0;
     @Override
     public void runOpMode() throws InterruptedException {
-        Servo plane = hardwareMap.servo.get("plane");
+        Servo plane = hardwareMap.servo.get("drone");
         waitForStart();
         while (opModeIsActive() && !isStopRequested()) {
             plane.setPosition(position);

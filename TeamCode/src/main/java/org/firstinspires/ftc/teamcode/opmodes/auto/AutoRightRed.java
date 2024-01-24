@@ -43,7 +43,7 @@ public class AutoRightRed extends AutoBase {
         drive.setPoseEstimate(startPose);
 
         TrajectorySequence detectionLeft = drive.trajectorySequenceBuilder(startPose)
-                .splineTo(new Vector2d(15.0, -27), Math.toRadians(HEADING_TO_BACKDROP))
+                .splineTo(new Vector2d(15.0, -26), Math.toRadians(HEADING_TO_BACKDROP))
                 .relativeTemporalMarker(-0.33, () -> {
                     intake.setPower(1);
                 })
@@ -57,10 +57,10 @@ public class AutoRightRed extends AutoBase {
                 .build();
 
         TrajectorySequence detectionMid = drive.trajectorySequenceBuilder(startPose)
-                .addSpatialMarker(new Vector2d(27.5, -19.3), () -> {
+                .addSpatialMarker(new Vector2d(27.5, -20), () -> {
                     intake.setPower(1);
                 })
-                .splineTo(new Vector2d(32.5, -19.3), Math.toRadians(HEADING_TO_BACKDROP))
+                .splineTo(new Vector2d(32.5, -20), Math.toRadians(HEADING_TO_BACKDROP))
                 .relativeTemporalMarker(0.5, () -> {
                     intake.setPower(0);
                 })
@@ -72,15 +72,15 @@ public class AutoRightRed extends AutoBase {
 
         TrajectorySequence detectionRight = drive.trajectorySequenceBuilder(startPose)
                 .setVelConstraint(slowConstraint)
-                .splineTo(new Vector2d(37.5, -28.5), Math.toRadians(HEADING_TO_BACKDROP))
-                .relativeTemporalMarker(-0.57, () -> {
+                .splineToSplineHeading(new Pose2d(25.5, -40.5, HEADING_TO_RED), Math.toRadians(HEADING_TO_BACKDROP))
+                .relativeTemporalMarker(-0.47, () -> {
                     intake.setPower(0.8);
                 })
                 .relativeTemporalMarker(0.3, () -> {
                     intake.setPower(0);
                 })
                 .resetConstraints()
-                .splineToConstantHeading(new Vector2d(50, -35.8), Math.toRadians(HEADING_TO_BACKDROP))
+                .splineToSplineHeading(new Pose2d(52, -35.8, HEADING_TO_BACKDROP), Math.toRadians(HEADING_TO_BACKDROP))
                 .relativeTemporalMarker(-1.2, () -> {
                     lift.setTargetPosition(270, 1);
                 })
@@ -102,7 +102,7 @@ public class AutoRightRed extends AutoBase {
                         if (finalI == 0) {
                             drive.setPoseEstimate(new Pose2d(
                                     detectionEnds[0].getX() - 1,
-                                    detectionEnds[0].getY() - 1.3,
+                                    detectionEnds[0].getY() + 4.3,
                                     detectionEnds[0].getHeading())
                             );
                         } else if (finalI == 2) {
@@ -118,7 +118,7 @@ public class AutoRightRed extends AutoBase {
                     .splineToConstantHeading(new Vector2d(0, -8), Math.toRadians(180))
                     .splineToConstantHeading(new Vector2d(-20, -4.4), Math.toRadians(180))
                     .relativeTemporalMarker(0, () -> {
-                        pivotIntake.setPosLeft(0.34);
+                        pivotIntake.setPosLeft(0.325);
                     })
                     .setVelConstraint(slowConstraint)
                     .splineToSplineHeading(new Pose2d(-52.1, -4.4, HEADING_TO_BACKDROP), Math.toRadians(-180))
@@ -126,7 +126,7 @@ public class AutoRightRed extends AutoBase {
                         intake.setPower(-1);
                     })
                     .relativeTemporalMarker(0, () -> {
-                        pivotIntake.setPosLeft(0.27);
+                        pivotIntake.setPosLeft(0.24);
                     })
                     .forward(3)
                     .build());
@@ -170,6 +170,7 @@ public class AutoRightRed extends AutoBase {
                     intake.setPower(1);
                 })
                 .addTemporalMarker(2, () -> {
+                    pivotIntake.setInit();
                     intake.setPower(0);
                 })
                 .lineToSplineHeading(new Pose2d(20, -2, HEADING_TO_BACKDROP))

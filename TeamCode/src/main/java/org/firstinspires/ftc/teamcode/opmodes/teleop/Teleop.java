@@ -63,9 +63,15 @@ public class Teleop extends LinearOpMode {
 
         new Thread(() -> {
             while (opModeIsActive() && !isStopRequested()) {
-                drive.vectorMove(gamepad1.left_stick_x, -gamepad1.left_stick_y,
-                        (gamepad1.right_trigger - gamepad1.left_trigger),
-                        gamepad1.a ? 0.4 : 1.0);
+                if (!gamepad1.dpad_left && !gamepad1.dpad_right) {
+                    drive.vectorMove(gamepad1.left_stick_x, -gamepad1.left_stick_y,
+                            (gamepad1.right_trigger - gamepad1.left_trigger),
+                            gamepad1.a ? 0.4 : 1.0);
+                } else if (gamepad1.dpad_left) {
+                    drive.vectorMove(-1, 0, 0, 0.5);
+                } else if (gamepad1.dpad_right) {
+                    drive.vectorMove(1, 0, 0, 0.5);
+                }
                 gamepadEx1.update();
             }
         }).start();
@@ -87,6 +93,7 @@ public class Teleop extends LinearOpMode {
                 if (newPos < PivotIntake.PIVOT_TELEOP) newPos = PivotIntake.PIVOT_TELEOP;
                 pivotIntake.servoRight.setPosition(newPos);
             }
+
             lastTime = System.currentTimeMillis();
             telemetry.addData("voltage", getBatteryVoltage());
 

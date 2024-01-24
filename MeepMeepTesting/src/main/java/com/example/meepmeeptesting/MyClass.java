@@ -39,7 +39,8 @@ public class MyClass {
             new AngularVelocityConstraint(2)
     ));
 
-    static Pose2d startPose = new Pose2d(-TILE_SIZE * 1.5 - 4.15, TILE_SIZE * 3 - 18, HEADING_TO_RED);
+    static Pose2d startPose = new Pose2d(TILE_SIZE * 0.5 + 3.15, TILE_SIZE * 3 - 18, HEADING_TO_RED);
+
     public static void main(String[] args) {
 
 
@@ -60,9 +61,11 @@ public class MyClass {
 //                                .build()
 
                         drive.trajectorySequenceBuilder(startPose) // left detection
-                                .splineToConstantHeading(new Vector2d(0, -8), Math.toRadians(180))
-                                .splineToConstantHeading(new Vector2d(-20, -3.4), Math.toRadians(180))
+                                .splineToSplineHeading(new Pose2d(16.0, 25, HEADING_TO_BACKDROP), HEADING_TO_STACK)
+                                .splineToConstantHeading(new Vector2d(49, 21.0), Math.toRadians(HEADING_TO_BACKDROP))
+//                .relativeLineToLinearHeading(new Pose2d(-7, -TILE_SIZE - 2, HEADING_TO_STACK))
                                 .build()
+
 
 //                        drive.trajectorySequenceBuilder(new Pose2d(0, 0, 0)) // mid detection
 //                                .splineToConstantHeading(new Vector2d(15, 15), Math.toRadians(-90))

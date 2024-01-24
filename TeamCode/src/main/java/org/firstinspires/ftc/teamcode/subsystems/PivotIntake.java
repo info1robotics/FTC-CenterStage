@@ -9,7 +9,7 @@ public class PivotIntake {
     public static double PIVOT_MAX = 0.75;
 
     public static double PIVOT_AUTO = 0.7;
-    public static double PIVOT_TELEOP = 0.054;
+    public static double PIVOT_TELEOP = 0.24;
 
     public Servo servoRight; // when looking from the intake
     public PivotIntake(HardwareMap hardwareMap) {

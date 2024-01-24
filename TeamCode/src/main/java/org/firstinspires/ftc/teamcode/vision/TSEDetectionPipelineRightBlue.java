@@ -25,13 +25,13 @@ public class TSEDetectionPipelineRightBlue extends OpenCvPipeline {
     /*
      * The core values which define the location and size of the sample regions
      */
-    static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(99, 188);
-    static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(251, 153 + 30);
-    static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(498, 188);
+    static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(1, 188 - 150);
+    static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(251 - 99, 153 + 30 - 150);
+    static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(498 - 99, 188 - 150);
     static final int REGION_WIDTH = 125;
-    static final int REGION_HEIGHT = 75 + 40;
+    static final int REGION_HEIGHT = 75 + 40 + 150;
     static final int REGION2_WIDTH = 225;
-    static final int REGION2_HEIGHT = 60 + 40;
+    static final int REGION2_HEIGHT = 60 + 40 + 150;
 
 
     // Volatile since accessed by OpMode thread w/o synchronization
@@ -62,8 +62,8 @@ public class TSEDetectionPipelineRightBlue extends OpenCvPipeline {
      * Working variables
      */ Mat region1, region2, region3;
     int avg1, avg2, avg3;
-    Scalar lowerYellow = new Scalar(0, 0, 20); // rgb
-    Scalar upperYellow = new Scalar(5, 107, 255); // rgb
+    Scalar lowerBlue = new Scalar(0, 0, 20); // rgb
+    Scalar upperBlue = new Scalar(5, 107, 255); // rgb
 
     Scalar lower;
     Scalar upper;
@@ -78,12 +78,16 @@ public class TSEDetectionPipelineRightBlue extends OpenCvPipeline {
     public Mat processFrame(Mat input) {
         try {
             Imgproc.cvtColor(input, input, Imgproc.COLOR_RGBA2RGB);
-            Core.inRange(input, lowerYellow, upperYellow, input);
+            Core.inRange(input, lowerBlue, upperBlue, input);
 
             region1 = new Mat(input, new Rect(region1_pointA, region1_pointB));
             region2 = new Mat(input, new Rect(region2_pointA, region2_pointB));
             region3 = new Mat(input, new Rect(region3_pointA, region3_pointB));
 
+//            Imgproc.rectangle(input, region1_pointA, region1_pointB, BLUE, 2);
+//            Imgproc.rectangle(input, region2_pointA, region2_pointB, BLUE, 2);
+//            Imgproc.rectangle(input, region3_pointA, region3_pointB, BLUE, 2);
+//
             int sel1 = Core.countNonZero(region1);
             int sel2 = Core.countNonZero(region2);
             int sel3 = Core.countNonZero(region3);
@@ -102,10 +106,6 @@ public class TSEDetectionPipelineRightBlue extends OpenCvPipeline {
 
 
             AutoBase.setDetectedZone(position);
-
-            Imgproc.rectangle(input, region1_pointA, region1_pointB, BLUE, 2);
-            Imgproc.rectangle(input, region2_pointA, region2_pointB, BLUE, 2);
-            Imgproc.rectangle(input, region3_pointA, region3_pointB, BLUE, 2);
 
             region1.release();
             region2.release();

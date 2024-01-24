@@ -25,13 +25,13 @@ public class TSEDetectionPipelineLeftBlue extends OpenCvPipeline {
     /*
      * The core values which define the location and size of the sample regions
      */
-    static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(99 + 15, 188);
-    static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(251 + 15, 153);
-    static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(498 + 10, 188);
+    static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(99 + 15, 188 - 150);
+    static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(251 + 15, 153 - 150);
+    static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(498 + 10, 188 - 150);
     static final int REGION_WIDTH = 125;
-    static final int REGION_HEIGHT = 75 + 60;
+    static final int REGION_HEIGHT = 75 + 60 + 150;
     static final int REGION2_WIDTH = 225;
-    static final int REGION2_HEIGHT = 60 + 60;
+    static final int REGION2_HEIGHT = 60 + 60 + 150;
 
     static final int MIN_RED_AREA = 20;
 
@@ -78,38 +78,38 @@ public class TSEDetectionPipelineLeftBlue extends OpenCvPipeline {
     @Override
     public Mat processFrame(Mat input) {
         try {
-            Imgproc.cvtColor(input, input, Imgproc.COLOR_RGBA2RGB);
-            Core.inRange(input, lowerYellow, upperYellow, input);
-
-            region1 = new Mat(input, new Rect(region1_pointA, region1_pointB));
-            region2 = new Mat(input, new Rect(region2_pointA, region2_pointB));
-            region3 = new Mat(input, new Rect(region3_pointA, region3_pointB));
-
-            int sel1 = Core.countNonZero(region1);
-            int sel2 = Core.countNonZero(region2);
-            int sel3 = Core.countNonZero(region3);
-
-            AutoBase.getInstance().telemetry.addData("Pixels Left", sel1);
-            AutoBase.getInstance().telemetry.addData("Pixels Mid", sel2);
-            AutoBase.getInstance().telemetry.addData("Pixels Right", sel3);
-
-            if (sel1 > 500) {
-                position = AutoConstants.TSEPosition.LEFT;
-            } else if (sel2 > 500) {
-                position = AutoConstants.TSEPosition.CENTER;
-            } else if (sel3 > 200) {
-                position = AutoConstants.TSEPosition.RIGHT;
-            }
-
-            AutoBase.setDetectedZone(position);
+//            Imgproc.cvtColor(input, input, Imgproc.COLOR_RGBA2RGB);
+//            Core.inRange(input, lowerYellow, upperYellow, input);
+//
+//            region1 = new Mat(input, new Rect(region1_pointA, region1_pointB));
+//            region2 = new Mat(input, new Rect(region2_pointA, region2_pointB));
+//            region3 = new Mat(input, new Rect(region3_pointA, region3_pointB));
+//
+//            int sel1 = Core.countNonZero(region1);
+//            int sel2 = Core.countNonZero(region2);
+//            int sel3 = Core.countNonZero(region3);
+//
+//            AutoBase.getInstance().telemetry.addData("Pixels Left", sel1);
+//            AutoBase.getInstance().telemetry.addData("Pixels Mid", sel2);
+//            AutoBase.getInstance().telemetry.addData("Pixels Right", sel3);
+//
+//            if (sel1 > 500) {
+//                position = AutoConstants.TSEPosition.LEFT;
+//            } else if (sel2 > 500) {
+//                position = AutoConstants.TSEPosition.CENTER;
+//            } else if (sel3 > 200) {
+//                position = AutoConstants.TSEPosition.RIGHT;
+//            }
+//
+//            AutoBase.setDetectedZone(position);
 
             Imgproc.rectangle(input, region1_pointA, region1_pointB, BLUE, 2);
             Imgproc.rectangle(input, region2_pointA, region2_pointB, BLUE, 2);
             Imgproc.rectangle(input, region3_pointA, region3_pointB, BLUE, 2);
 
-            region1.release();
-            region2.release();
-            region3.release();
+//            region1.release();
+//            region2.release();
+//            region3.release();
 
             try {
                 sleep(100);

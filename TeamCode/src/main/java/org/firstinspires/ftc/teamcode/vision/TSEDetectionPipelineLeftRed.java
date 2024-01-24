@@ -25,13 +25,13 @@ public class TSEDetectionPipelineLeftRed extends OpenCvPipeline {
     /*
      * The core values which define the location and size of the sample regions
      */
-    static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(99 + 15, 188);
-    static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(251 + 15, 153);
-    static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(498 + 10, 188);
+    static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(99 + 15, 188 - 150);
+    static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(251 + 15, 153 - 150);
+    static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(498 + 10, 188 - 150);
     static final int REGION_WIDTH = 125;
-    static final int REGION_HEIGHT = 75 + 60;
+    static final int REGION_HEIGHT = 75 + 60 + 150;
     static final int REGION2_WIDTH = 225;
-    static final int REGION2_HEIGHT = 60 + 60;
+    static final int REGION2_HEIGHT = 60 + 60 + 150;
 
     static final int MIN_RED_AREA = 20;
 

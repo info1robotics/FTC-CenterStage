@@ -117,8 +117,12 @@ public abstract class AutoBase extends LinearOpMode {
             onInitTick();
             telemetry.update();
         }
+
+        camera.closeCameraDeviceAsync(() -> {});
         onStart();
-        pivotIntake.setPosLeft(0.55);
+
+
+//        pivotIntake.setPosLeft(0.55);
         state = State.START;
         if (task != null) task.start(this);
 

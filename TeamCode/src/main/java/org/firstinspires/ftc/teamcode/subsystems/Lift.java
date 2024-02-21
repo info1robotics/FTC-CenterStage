@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import static org.firstinspires.ftc.teamcode.subsystems.Pivot.PIVOT_TRANSITION;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
@@ -34,6 +35,7 @@ public class Lift {
         liftRight.setMotorType(mct3);
 
         liftRight.setDirection(DcMotor.Direction.REVERSE);
+        liftLeft2.setDirection(DcMotorSimple.Direction.REVERSE);
         liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         liftLeft2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);

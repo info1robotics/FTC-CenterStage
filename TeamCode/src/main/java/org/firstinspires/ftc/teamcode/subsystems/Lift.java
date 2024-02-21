@@ -12,12 +12,13 @@ import org.firstinspires.ftc.teamcode.opmodes.teleop.Teleop;
 import java.text.DecimalFormat;
 
 public class Lift {
-    public DcMotor liftLeft, liftRight;
+    public DcMotor liftLeft, liftRight, liftLeft2;
     public static int UPPER = 1700;
     public static int LOWER = -15;
 
     public Lift(HardwareMap hardwareMap) {
         liftLeft = hardwareMap.dcMotor.get("liftLeft");
+        liftLeft2 = hardwareMap.dcMotor.get("liftLeft2");
         liftRight = hardwareMap.dcMotor.get("liftRight");
 
         MotorConfigurationType mct1 = liftLeft.getMotorType().clone();
@@ -28,21 +29,31 @@ public class Lift {
         mct2.setAchieveableMaxRPMFraction(1.0);
         liftRight.setMotorType(mct2);
 
+        MotorConfigurationType mct3 = liftLeft.getMotorType().clone();
+        mct3.setAchieveableMaxRPMFraction(1.0);
+        liftRight.setMotorType(mct3);
+
         liftRight.setDirection(DcMotor.Direction.REVERSE);
         liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        liftLeft2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftLeft2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftLeft.setTargetPosition(0);
+        liftLeft2.setTargetPosition(0);
         liftRight.setTargetPosition(0);
         liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftLeft2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public void resetEncoders() {
         liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftLeft2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftLeft2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
@@ -76,10 +87,12 @@ public class Lift {
 
     public void setTargetPosition(int position, double power) {
         liftLeft.setTargetPosition(position);
+        liftLeft2.setTargetPosition(position);
         liftRight.setTargetPosition(position);
 
 
         liftLeft.setPower(power);
+        liftLeft2.setPower(power);
         liftRight.setPower(power);
     }
 }

@@ -47,7 +47,7 @@ public class Teleop extends LinearOpMode {
         Lift lift = new Lift(hardwareMap);
         Intake intake = new Intake(hardwareMap);
         PivotIntake pivotIntake = new PivotIntake(hardwareMap);
-        Cane cane = new Cane(hardwareMap);
+//        Cane cane = new Cane(hardwareMap);
         DroneLauncher drone=new DroneLauncher(hardwareMap);
         drone.setDefault();
         pivot.setCollect();
@@ -98,7 +98,7 @@ public class Teleop extends LinearOpMode {
             lastTime = System.currentTimeMillis();
             telemetry.addData("voltage", getBatteryVoltage());
 
-            cane.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
+//            cane.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
 
 
             if (gamepadEx2.getButtonDown("bumper_left")) {

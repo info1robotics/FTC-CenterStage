@@ -32,7 +32,7 @@ public class Lift {
 
         MotorConfigurationType mct3 = liftLeft.getMotorType().clone();
         mct3.setAchieveableMaxRPMFraction(1.0);
-        liftRight.setMotorType(mct3);
+        liftLeft2.setMotorType(mct3);
 
         liftRight.setDirection(DcMotor.Direction.REVERSE);
         liftLeft2.setDirection(DcMotorSimple.Direction.REVERSE);

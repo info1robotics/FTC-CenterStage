@@ -50,7 +50,7 @@ public class Teleop extends LinearOpMode {
 //        Cane cane = new Cane(hardwareMap);
         DroneLauncher drone=new DroneLauncher(hardwareMap);
         drone.setDefault();
-        pivot.setCollect();
+//        pivot.setCollect();
 
         claw.open();
         pivotIntake.setInit();
@@ -84,7 +84,7 @@ public class Teleop extends LinearOpMode {
         long lastTime = System.currentTimeMillis();
         while (opModeIsActive() && !isStopRequested()) {
             intake.setPower(-gamepad2.left_stick_y);
-            double deltaTime = (System.currentTimeMillis() - lastTime) / 1000d;
+            double deltaTime = (System.currentTimeMillis() - lastTime) / 3000d;
             if (gamepad2.dpad_up) {
                 double newPos = pivotIntake.servoRight.getPosition() + 2 * deltaTime;
                 if (newPos > PivotIntake.PIVOT_MAX) newPos = PivotIntake.PIVOT_MAX;
@@ -139,7 +139,7 @@ public class Teleop extends LinearOpMode {
             lastRightStickY = rightStickY;
 
 
-            lift.tick();
+//            lift.tick();
             telemetry.addData("fdfsdfs", lift.liftLeft.getCurrentPosition());
             telemetry.addData("fdfsdfsfgdf", lift.liftRight.getCurrentPosition());
             telemetry.update();

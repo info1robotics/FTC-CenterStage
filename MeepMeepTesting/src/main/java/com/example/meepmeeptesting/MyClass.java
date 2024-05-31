@@ -24,6 +24,18 @@ public class MyClass {
         RIGHT
     }
 
+    public static Vector2d v(double x, double y) {
+        return new Vector2d(x, y);
+    }
+
+    public static Pose2d p(double x, double y, double theta) {
+        return new Pose2d(x, y, theta);
+    }
+
+    public static double rad(double angdeg) {
+        return Math.toRadians(angdeg);
+    }
+
     public static double HEADING_TO_BLUE = Math.toRadians(90);
     public static double HEADING_TO_RED = Math.toRadians(-90);
     public static double HEADING_TO_BACKDROP = Math.toRadians(0);
@@ -39,9 +51,10 @@ public class MyClass {
             new AngularVelocityConstraint(2)
     ));
 
-    static Pose2d startPose = new Pose2d(TILE_SIZE * 0.5 + 3.15, TILE_SIZE * 3 - 18, HEADING_TO_RED);
-
+    static Pose2d startPose = p(49, 31.6, HEADING_TO_BACKDROP);
     public static void main(String[] args) {
+
+
 
 
         MeepMeep meepMeep = new MeepMeep(600);
@@ -52,29 +65,15 @@ public class MyClass {
                 .setColorScheme(new ColorSchemeBlueDark())
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 10)
                 .followTrajectorySequence(drive ->
-//                        drive.trajectorySequenceBuilder(startPose) // right detection
-//                                .splineTo(new Vector2d(-16.5 - TILE_SIZE, 10), Math.toRadians(HEADING_TO_RED))
-//                                .splineToConstantHeading(new Vector2d(16, 5), HEADING_TO_BACKDROP)
-//                                .setVelConstraint(verySlowConstraint)
-//                                .splineToConstantHeading(new Vector2d(50, 25), HEADING_TO_BACKDROP)
-//                                .resetConstraints()
-//                                .build()
-
-                        drive.trajectorySequenceBuilder(startPose) // left detection
-                                .splineToSplineHeading(new Pose2d(16.0, 25, HEADING_TO_BACKDROP), HEADING_TO_STACK)
-                                .splineToConstantHeading(new Vector2d(49, 21.0), Math.toRadians(HEADING_TO_BACKDROP))
-//                .relativeLineToLinearHeading(new Pose2d(-7, -TILE_SIZE - 2, HEADING_TO_STACK))
+                        drive.trajectorySequenceBuilder(startPose)
+                                .setReversed(true)
+                                .splineToSplineHeading(p(17, 53, HEADING_TO_BACKDROP), rad(180))
+                                .splineToSplineHeading(p(-17.85, 55, HEADING_TO_BACKDROP + rad(30)), rad(180))
                                 .build()
-
-
-//                        drive.trajectorySequenceBuilder(new Pose2d(0, 0, 0)) // mid detection
-//                                .splineToConstantHeading(new Vector2d(15, 15), Math.toRadians(-90))
-//                                .build()
-
                 );
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK)
-//                .setDarkMode(true)
+                .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
 
                 // Add both of our declared bot entities

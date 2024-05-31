@@ -96,23 +96,7 @@ public class AutoRightRed extends AutoBase {
         ArrayList<TrajectorySequence> stackTrajectories = new ArrayList<>();
 
         for (int i = 0; i < 3; i++) {
-            final int finalI = i;
-            stackTrajectories.add(drive.trajectorySequenceBuilder(detectionEnds[0])
-                    .relativeTemporalMarker(0, () -> {
-                        if (finalI == 0) {
-                            drive.setPoseEstimate(new Pose2d(
-                                    detectionEnds[0].getX() - 1,
-                                    detectionEnds[0].getY() + 4.3,
-                                    detectionEnds[0].getHeading())
-                            );
-                        } else if (finalI == 2) {
-                            drive.setPoseEstimate(new Pose2d(
-                                    detectionEnds[0].getX(),
-                                    detectionEnds[0].getY() - 16,
-                                    detectionEnds[0].getHeading())
-                            );
-                        }
-                    })
+            stackTrajectories.add(drive.trajectorySequenceBuilder(detectionEnds[i])
                     .setReversed(true)
                     .splineTo(new Vector2d(17, -5), Math.toRadians(180))
                     .splineToConstantHeading(new Vector2d(0, -8), Math.toRadians(180))
